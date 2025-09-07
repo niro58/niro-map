@@ -1,0 +1,52 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: niro-map
+  namespace: personal
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.niromap.com`) && (PathPrefix(`/fonts`) || PathPrefix(`/css`) || PathPrefix(`/js`))
+      kind: Rule
+      priority: 11
+      middlewares:
+        - name: add-cache-headers
+          namespace: shared
+        - name: gzip-compress
+          namespace: kube-system
+      services:
+        - name: niro-map-service
+          port: 80
+
+    - match: Host(`niromap.com`) || Host(`www.niromap.com`)
+      kind: Rule
+      priority: 5
+      middlewares:
+        - name: redirect-to-www
+          namespace: kube-system
+        - name: gzip-compress
+          namespace: kube-system
+      services:
+        - name: niro-map-service
+          port: 80
+  tls:
+    certResolver: myresolver
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: niro-map-http
+  namespace: personal
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`niromap.com`) || Host(`www.niromap.com`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+          namespace: kube-system
+      services:
+        - name: niro-map-service
+          port: 80

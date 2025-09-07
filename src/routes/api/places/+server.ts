@@ -6,7 +6,7 @@ import { json } from '@sveltejs/kit';
 export async function GET(event) {
     const reqParams = urlParamsToJson(event.url.searchParams) as unknown as PlaceRequest;
     // normalize/guard incoming params
-    const limit = Math.min(Math.max(0, Number(reqParams.limit) || 10000), 50000);
+    const limit = Math.min(Math.max(0, Number(reqParams.limit) || 10000), 10000);
 
     const categories = reqParams.categories && reqParams.categories.length > 0 ? (Array.isArray(reqParams.categories) ? reqParams.categories : [reqParams.categories]) : null;
     const countries = reqParams.countries && reqParams.countries.length > 0 ? (Array.isArray(reqParams.countries) ? reqParams.countries : [reqParams.countries]) : null;

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: niro-map
+  namespace: personal
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  progressDeadlineSeconds: 60
+  selector:
+    matchLabels:
+      app: niro-map
+  template:
+    metadata:
+      labels:
+        app: niro-map
+    spec:
+      containers:
+        - name: niro-map
+          image: ghcr.io/niro58/niro-map:VERSION
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/ping
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 25m
+              memory: 250Mi
+            limits:
+              cpu: 100m
+              memory: 450Mi
+          envFrom:
+            - configMapRef:
+                name: niro-map-config

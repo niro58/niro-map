@@ -77,7 +77,6 @@
 	}
 </script>
 
-
 <div class="flex flex-row gap-4">
 	<div
 		class="h-full max-h-screen w-64 overflow-y-auto rounded-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm"
@@ -177,7 +176,7 @@
 						{selectedLimit}
 					</Select.Trigger>
 					<Select.Content class="max-h-60">
-						{#each ['1000', '2500', '10000', '25000', '50000'] as limit}
+						{#each ['1000', '2500', '10000'] as limit}
 							<Select.Item label={limit} value={limit} />
 						{/each}
 					</Select.Content>

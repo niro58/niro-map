@@ -21,10 +21,6 @@
 	const socials = toArrayField(place?.socials);
 	const emails = toArrayField(place?.emails);
 	const phones = toArrayField(place?.phones);
-
-	function onContinue() {
-		goto('/place/' + place.id);
-	}
 </script>
 
 <div
@@ -130,6 +126,6 @@
 		</Button>
 
 		<!-- Continue button goes to place page; parent may also listen to 'continue' event -->
-		<Button href={`/place/${place.ogc_fid}`} target="_blank">Details</Button>
+		<Button href={`/places/${place.ogc_fid}`} target="_blank">Details</Button>
 	</div>
 </div>

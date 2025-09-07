@@ -25,7 +25,6 @@ const config = {
 				'base-uri': ['self'],
 				'form-action': ['self'],
 				'upgrade-insecure-requests': true,
-				'trusted-types': ['default']
 			}
 		}
 	}
