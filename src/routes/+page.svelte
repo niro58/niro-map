@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
-	import { PUBLIC_API_ENDPOINT } from '$env/static/public';
 	import { getMapPlaces } from '$lib/api';
 	import Map from '$lib/components/map.svelte';
 	import type { PlaceResponse } from '$lib/types';
 	import { cleanCategory, gotoFilter, type ResultClient, type ResultFetch } from '$lib/utils';
-	import { onMount } from 'svelte';
 	import * as Accordion from '$lib/components/ui/accordion/index';
 	import { CATEGORIES, countries } from '$lib/const';
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
@@ -16,12 +14,12 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import * as Select from '$lib/components/ui/select/index';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import Seo from '$lib/components/ui/seo/seo.svelte';
 	let places: ResultClient<PlaceResponse[]> = $state({
 		type: 'NOT_ASKED'
 	});
 
 	$effect(() => {
-		console.log('Fetching places');
 		places = { type: 'LOADING' };
 		getMapPlaces({
 			limit: selectedLimit ? String(parseInt(selectedLimit)) : undefined,
@@ -76,6 +74,12 @@
 		gotoFilter(page.url.toString());
 	}
 </script>
+
+<Seo
+	title="Niro Map | Explore Millions of Popular Places Worldwide"
+	description="Explore over 12 million popular points of interest from Overture Maps on an interactive world map. Filter places by category, country, or search an area."
+	keywords="interactive map, Overture maps, points of interest, POI explorer, data visualization, world map, place finder, PostGIS, maplibre, Svelte"
+/>
 
 <div class="flex flex-row gap-4">
 	<div

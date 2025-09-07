@@ -1,9 +1,13 @@
-import { clientPg } from '$lib/server/db.js';
+import { Database } from '$lib/server/db.js';
 import type { PlaceRequest } from '$lib/types.js';
 import { urlParamsToJson } from '$lib/utils.js';
 import { json } from '@sveltejs/kit';
 
 export async function GET(event) {
+    if (!Database.client) {
+        return json({ error: "Database not configured" }, { status: 500 });
+    }
+
     const reqParams = urlParamsToJson(event.url.searchParams) as unknown as PlaceRequest;
     // normalize/guard incoming params
     const limit = Math.min(Math.max(0, Number(reqParams.limit) || 10000), 10000);
@@ -129,6 +133,6 @@ export async function GET(event) {
         ORDER BY confidence desc
         ${limit ? `LIMIT $${limitParamIndex}` : ''}
     `;
-    const result = await clientPg.query(sql, values);
+    const result = await Database.client.query(sql, values);
     return json(result.rows);
 }

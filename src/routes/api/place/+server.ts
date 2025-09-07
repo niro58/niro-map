@@ -1,4 +1,4 @@
-import { clientPg } from '$lib/server/db.js';
+import { Database } from '$lib/server/db';
 import type { GetPlaceRequest, PlaceRequest } from '$lib/types.js';
 import { urlParamsToJson } from '$lib/utils.js';
 import { json } from '@sveltejs/kit';
@@ -6,10 +6,13 @@ import { json } from '@sveltejs/kit';
 
 
 export async function GET(req) {
+    if (!Database.client) {
+        return json({ error: "Database not configured" }, { status: 500 });
+    }
     const reqParams = urlParamsToJson(req.url.searchParams) as unknown as GetPlaceRequest;
 
 
-    const result = await clientPg.query(
+    const result = await Database.client.query(
         `
        SELECT 
         ogc_fid, id, version, sources, "names.primary", "categories.primary", "categories.alternate", confidence, websites, socials, emails, phones, "brand.names.primary", addresses,

@@ -3,15 +3,22 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import Seo from '$lib/components/ui/seo/seo.svelte';
 
 	const githubUrl = 'https://github.com/niro58/niro-map';
 	const kofiUrl = 'https://ko-fi.com/niro58';
 </script>
 
+<Seo
+	title="About Niro Map"
+	description="Learn about Niro Map, a project to visualize millions of Overture POIs. Find info on features, the tech stack (Svelte, PostGIS), and how to contribute."
+	keywords="about, Overture maps project, open source, Svelte, PostGIS, Supabase, data visualization project, map API, contact, contribute, niro58"
+/>
+
 <div class="mx-auto my-8 max-w-4xl space-y-6 p-4">
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Pop Places Map</Card.Title>
+			<Card.Title>Niro Map</Card.Title>
 			<Card.Description>
 				Map visualizer of popular places — a small weekend project for fun
 			</Card.Description>
@@ -20,7 +27,7 @@
 			<p class="mb-3 text-sm text-muted-foreground">
 				This project visualizes popular points-of-interest from Overture maps places and lets you
 				explore, filter and inspect places on an interactive map, or a signular page of that place.
-                In total there are ~12 million places from all around the world.
+				In total there are ~12 million places from all around the world.
 			</p>
 			<p class="mb-3 text-sm text-muted-foreground">
 				For now it was just a fun weeked project, so many things are done in a quick way, some

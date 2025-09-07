@@ -2,6 +2,7 @@
 	import Map from '$lib/components/map.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import Seo from '$lib/components/ui/seo/seo.svelte';
 	import { cleanCategory, cleanWebsite, googleMapsLink } from '$lib/utils.js';
 	import {
 		MapPin,
@@ -49,6 +50,12 @@
 	}
 	const mapCenterWithOffset = [place.longitude, place.latitude - 0.14];
 </script>
+
+<Seo
+	title={`${place['names.primary'] ?? place.id} | Niro Map`}
+	description="View detailed information for a specific point of interest, including its category, address, source metadata, and its precise location on the map."
+	keywords="place details, point of interest, POI data, location information, coordinates, Overture data, map location, business details, place inspector"
+/>
 
 <div class="mx-auto my-8 max-w-6xl space-y-8 p-4">
 	<!-- Header Section -->

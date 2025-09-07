@@ -17,14 +17,14 @@ const config = {
 			directives: {
 				'default-src': ['self'],
 				'script-src': ['self', 'plausible.io', 'blob:'],
-				'style-src': ['self'],
-				'img-src': ['self'],
+				'style-src': ['self', 'unsafe-inline'],
+				'img-src': ['self', 'data:'],
 				'font-src': ['self'],
 				'connect-src': ['self', 'plausible.io', 'tiles.openfreemap.org'],
 				'object-src': ['none'],
 				'base-uri': ['self'],
 				'form-action': ['self'],
-				'upgrade-insecure-requests': true,
+				'upgrade-insecure-requests': true
 			}
 		}
 	}

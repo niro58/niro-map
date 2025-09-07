@@ -1,5 +1,4 @@
 import { goto } from "$app/navigation";
-import { PUBLIC_API_ENDPOINT } from "$env/static/public";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
