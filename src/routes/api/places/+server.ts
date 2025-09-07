@@ -5,22 +5,49 @@ import { json } from '@sveltejs/kit';
 
 export async function GET(event) {
     const reqParams = urlParamsToJson(event.url.searchParams) as unknown as PlaceRequest;
-    console.log(reqParams);
     // normalize/guard incoming params
-    const limit = Math.max(1, Math.min(10000, Number(reqParams.limit ?? 100)));
+    const limit = Math.min(Math.max(0, Number(reqParams.limit) || 10000), 50000);
 
-    const categories = reqParams.categories ? (Array.isArray(reqParams.categories) ? reqParams.categories : [reqParams.categories]) : null;
-    const countries = reqParams.countries ? (Array.isArray(reqParams.countries) ? reqParams.countries : [reqParams.countries]) : null;
-
+    const categories = reqParams.categories && reqParams.categories.length > 0 ? (Array.isArray(reqParams.categories) ? reqParams.categories : [reqParams.categories]) : null;
+    const countries = reqParams.countries && reqParams.countries.length > 0 ? (Array.isArray(reqParams.countries) ? reqParams.countries : [reqParams.countries]) : null;
     // confidence in request may be 0-100 or 0-1; normalize to 0-1
-    let confidenceMin = typeof reqParams.confidenceMin === 'number' && reqParams.confidenceMin !== 0 ? reqParams.confidenceMin : undefined;
-    let confidenceMax = typeof reqParams.confidenceMax === 'number' && reqParams.confidenceMax !== 100 ? reqParams.confidenceMax : undefined;
-    if (confidenceMin != null && confidenceMin > 1) confidenceMin = confidenceMin / 100;
-    if (confidenceMax != null && confidenceMax > 1) confidenceMax = confidenceMax / 100;
+    let confidenceMin, confidenceMax;
 
-    const hasPoint = reqParams.point && typeof reqParams.point.lat === 'number' && typeof reqParams.point.lon === 'number';
-    const radiusKm = typeof reqParams.pointRadiusKm === 'number' ? Number(reqParams.pointRadiusKm) : undefined;
-    const radiusMeters = radiusKm != null ? Math.max(0, radiusKm) * 1000 : undefined;
+    if (reqParams.confidenceMin != null) {
+        const min = Number(reqParams.confidenceMin);
+        if (!isNaN(min) && min > 0) {
+            confidenceMin = min;
+        }
+    }
+
+    if (reqParams.confidenceMax != null) {
+        const max = Number(reqParams.confidenceMax);
+        if (!isNaN(max) && max < 100) {
+            confidenceMax = max;
+        }
+    }
+
+    // Normalize valid numbers to be between 0 and 1
+    if (confidenceMin != null && confidenceMin > 1) {
+        confidenceMin = confidenceMin / 100;
+    }
+    if (confidenceMax != null && confidenceMax > 1) {
+        confidenceMax = confidenceMax / 100;
+    }
+
+    let radiusMeters: number | undefined;
+    let latNum: number | undefined;
+    let lonNum: number | undefined;
+    if (reqParams.latitude && reqParams.longitude && reqParams.radius) {
+        const lat = Number(reqParams.latitude);
+        const lon = Number(reqParams.longitude);
+        const radiusKm = Number(reqParams.radius);
+        if (!isNaN(lat) && !isNaN(lon) && !isNaN(radiusKm) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && radiusKm > 0) {
+            latNum = lat;
+            lonNum = lon;
+            radiusMeters = Math.max(0, radiusKm) * 1000;
+        }
+    }
 
     // Build SQL with parameterized values
     const values: any[] = [];
@@ -46,20 +73,20 @@ export async function GET(event) {
     }
 
     // confidence min/max: compare against normalized confidence in DB (handle values stored 0-100 or 0-1)
-    if (confidenceMin != null) {
+    if (confidenceMin !== undefined) {
         values.push(confidenceMin);
         where.push(`(CASE WHEN confidence > 1 THEN confidence/100.0 ELSE confidence END) >= $${idx}`);
         idx++;
     }
-    if (confidenceMax != null) {
+    if (confidenceMax !== undefined) {
         values.push(confidenceMax);
         where.push(`(CASE WHEN confidence > 1 THEN confidence/100.0 ELSE confidence END) <= $${idx}`);
         idx++;
     }
 
     // spatial filter: ST_DWithin using geography for meters; ensure params order lon, lat, meters
-    if (hasPoint && radiusMeters != null && reqParams.point) {
-        values.push(reqParams.point.lon, reqParams.point.lat, radiusMeters);
+    if (radiusMeters !== undefined && latNum !== undefined && lonNum !== undefined) {
+        values.push(lonNum, latNum, radiusMeters);
         where.push(
             `ST_DWithin(
                 geometry::geography,
@@ -71,7 +98,10 @@ export async function GET(event) {
     }
 
     // final limit param
-    values.push(limit);
+    if (limit) {
+        values.push(limit);
+    }
+
     const limitParamIndex = idx;
     idx++;
 
@@ -97,10 +127,8 @@ export async function GET(event) {
         FROM public.places
         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
         ORDER BY confidence desc
-        LIMIT $${limitParamIndex}
+        ${limit ? `LIMIT $${limitParamIndex}` : ''}
     `;
-
     const result = await clientPg.query(sql, values);
-
     return json(result.rows);
 }

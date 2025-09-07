@@ -6,9 +6,10 @@ export async function getMapPlaces(filters: PlaceRequest): Promise<ResultFetch<P
     try {
         const url = new URL(env.PUBLIC_API_ENDPOINT + '/api/places');
         const sp = new URLSearchParams();
-        Object.entries(filters).forEach(([key, value]) => {
+        Object.entries(filters).filter(Boolean).forEach(([key, value]) => {
+            if (value === undefined) return;
             sp.append(key, value.toString());
-        });
+        })
 
         url.search = sp.toString();
         const res = await fetch(url.toString());

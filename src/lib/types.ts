@@ -23,13 +23,14 @@ export type PlaceResponse = {
     longitude: number;
 }
 export type PlaceRequest = {
-    limit?: number;
+    limit?: string; // number
     countries?: string[];
     categories?: string[];
-    confidenceMin?: number;
-    confidenceMax?: number;
-    point?: { lat: number; lon: number; };
-    pointRadiusKm?: number;
+    confidenceMin?: string; // number
+    confidenceMax?: string; // number
+    latitude?: string; // number
+    longitude?: string; // number
+    radius?: string; // number in km
 }
 export type GetPlaceRequest = {
     fid: string;

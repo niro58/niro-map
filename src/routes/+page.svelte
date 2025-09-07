@@ -24,11 +24,14 @@
 		console.log('Fetching places');
 		places = { type: 'LOADING' };
 		getMapPlaces({
-			limit: parseInt(selectedLimit),
+			limit: selectedLimit ? String(parseInt(selectedLimit)) : undefined,
 			countries: selectedCountries,
 			categories: activeCategories,
-			confidenceMin: confidenceRange[0],
-			confidenceMax: confidenceRange[1]
+			confidenceMin: String(confidenceRange[0]),
+			confidenceMax: String(confidenceRange[1]),
+			latitude: latitude,
+			longitude: longitude,
+			radius: radius
 		})
 			.then((res: ResultFetch<PlaceResponse[]>) => {
 				if (res.type === 'SUCCESS') {
@@ -57,15 +60,23 @@
 		parseInt(page.url.searchParams.get('confidence_max') || '100')
 	]);
 	const selectedCountries = $derived(page.url.searchParams.getAll('country'));
-	const selectedLimit = $derived(page.url.searchParams.get('limit') || '500');
+	const selectedLimit = $derived(page.url.searchParams.get('limit') || '10000');
+	const latitude = $derived(page.url.searchParams.get('latitude') || undefined);
+	const longitude = $derived(page.url.searchParams.get('longitude') || undefined);
+	const radius = $derived(page.url.searchParams.get('radius') || undefined);
 	function clearFilters() {
-		page.url.searchParams.delete('confidence_min');
-		page.url.searchParams.delete('confidence_max');
+		page.url.searchParams.delete('limit');
 		page.url.searchParams.delete('country');
 		page.url.searchParams.delete('category');
+		page.url.searchParams.delete('confidence_min');
+		page.url.searchParams.delete('confidence_max');
+		page.url.searchParams.delete('latitude');
+		page.url.searchParams.delete('longitude');
+		page.url.searchParams.delete('radius');
 		gotoFilter(page.url.toString());
 	}
 </script>
+
 
 <div class="flex flex-row gap-4">
 	<div
@@ -152,21 +163,21 @@
 				<Label for="limit-select">Limit</Label>
 				<Select.Root
 					type="single"
-					value={selectedLimit}
+					value={selectedLimit ?? ''}
 					onValueChange={(v) => {
-						page.url.searchParams.set('limit', v);
+						if (v === '') {
+							page.url.searchParams.delete('limit');
+						} else {
+							page.url.searchParams.set('limit', v);
+						}
 						gotoFilter(page.url.toString());
 					}}
 				>
 					<Select.Trigger id="country-select" class="w-full">
-						{#if !selectedLimit}
-							Select limit
-						{:else}
-							{selectedLimit}
-						{/if}
+						{selectedLimit}
 					</Select.Trigger>
 					<Select.Content class="max-h-60">
-						{#each ['250', '500', '1000', '2500', '5000', '10000'] as limit}
+						{#each ['1000', '2500', '10000', '25000', '50000'] as limit}
 							<Select.Item label={limit} value={limit} />
 						{/each}
 					</Select.Content>
@@ -212,7 +223,24 @@
 			{/each}
 		</Accordion.Root>
 	</div>
-	{#if places.type === 'SUCCESS'}
-		<Map {places} endpoint={`${env.PUBLIC_API_ENDPOINT}/api/states`} />
-	{/if}
+	<Map
+		{places}
+		endpoint={`${env.PUBLIC_API_ENDPOINT}/api/states`}
+		toAverageCenter={selectedCountries.length > 0}
+		onPinPlaced={(radius, point) => {
+			if (!radius || !point) {
+				page.url.searchParams.delete('latitude');
+				page.url.searchParams.delete('longitude');
+				page.url.searchParams.delete('radius');
+			} else {
+				page.url.searchParams.set('latitude', String(point.lat));
+				page.url.searchParams.set('longitude', String(point.lon));
+				page.url.searchParams.set('radius', String(radius));
+			}
+			gotoFilter(page.url.toString());
+		}}
+		defaultPlacedPin={latitude && longitude && radius
+			? { radius: Number(radius), point: { lat: Number(latitude), lon: Number(longitude) } }
+			: undefined}
+	/>
 </div>

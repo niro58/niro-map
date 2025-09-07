@@ -36,9 +36,8 @@ export class MapHandler {
     static DEGREES = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
     static DEFAULT_ANGLE_INDEX = this.DEGREES.indexOf(270);
 
-    static async states(body:MapStatesBody) {
+    static async states(body: MapStatesBody) {
 
-        console.time('Preparing points');
         const points: MarkerPointFeature[] = body.input.map((marker, index) => ({
             type: 'Feature',
             properties: {
@@ -61,14 +60,10 @@ export class MapHandler {
         });
 
         supercluster.load(points);
-        console.timeEnd('Preparing points');
 
         const pointsResult: [number, [number, number][]][] = body.input.map(() => ([-1, []]))
-        console.time('getAllExpansionZooms');
         const eventZooms = this.getAllExpansionZooms(supercluster, body.parameters);
-        console.timeEnd('getAllExpansionZooms');
 
-        console.time('Main loop');
         for (const zoom of eventZooms) {
             const featuresAtZoom = supercluster.getClusters([-180, -90, 180, 90], zoom);
             for (const feature of featuresAtZoom) {
@@ -77,7 +72,12 @@ export class MapHandler {
                 if (pointsResult[index][0] === -1) {
                     pointsResult[index][0] = zoom;
                 }
-                const r: [number, number] = [zoom, this.calculateTooltipAngle(feature, featuresAtZoom)];
+                let r: [number, number];
+                if (body.input.length < 1000) {
+                    r = [zoom, this.calculateTooltipAngle(feature, featuresAtZoom)];
+                } else {
+                    r = [zoom, this.DEFAULT_ANGLE_INDEX];
+                }
 
                 if (pointsResult[index][1].length > 0 && pointsResult[index][1][pointsResult[index][1].length - 1][1] === r[1]) {
                     continue;
@@ -85,7 +85,6 @@ export class MapHandler {
                 pointsResult[index][1].push(r);
             }
         }
-        console.timeEnd('Main loop');
 
         return {
             points: pointsResult
