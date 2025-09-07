@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: niro-map-postgres-service
+  namespace: personal
+spec:
+  selector:
+    app: niro-map-postgres
+  ports:
+    - protocol: TCP
+      port: 5432 
+      targetPort: 5432
+  type: ClusterIP 

@@ -63,7 +63,7 @@
 				This project is completely free to use. However, there are ongoing costs to maintain it:
 			</p>
 			<ul class="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
-				<li>Database hosting: ~$20/month</li>
+				<li>Database hosting: Self hosting on my VPS (1GB Memory)</li>
 				<li>Domain and hosting: 0, self-hosted on my own VPS</li>
 				<li>Hosting: 0, self-hosting on my VPS</li>
 				<li>Domain: ~$15/year</li>

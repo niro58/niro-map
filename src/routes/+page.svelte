@@ -58,7 +58,7 @@
 		parseInt(page.url.searchParams.get('confidence_max') || '100')
 	]);
 	const selectedCountries = $derived(page.url.searchParams.getAll('country'));
-	const selectedLimit = $derived(page.url.searchParams.get('limit') || '10000');
+	const selectedLimit = $derived(page.url.searchParams.get('limit') || '2500');
 	const latitude = $derived(page.url.searchParams.get('latitude') || undefined);
 	const longitude = $derived(page.url.searchParams.get('longitude') || undefined);
 	const radius = $derived(page.url.searchParams.get('radius') || undefined);

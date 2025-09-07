@@ -20,10 +20,7 @@ const config = {
 				'img-src': ['self', 'data:'],
 				'font-src': ['self'],
 				'connect-src': ['self', 'plausible.io', 'tiles.openfreemap.org'],
-				'object-src': ['none'],
-				'base-uri': ['self'],
-				'form-action': ['self'],
-				'upgrade-insecure-requests': true
+				'object-src': ['none']
 			}
 		}
 	}

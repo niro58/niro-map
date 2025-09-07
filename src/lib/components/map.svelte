@@ -60,12 +60,7 @@
 				? {
 						states: { url: endpoint }
 					}
-				: undefined,
-			animation: {
-				queue: {
-					limit: 10
-				}
-			}
+				: undefined
 		});
 
 		map = mapProvider.getMap();

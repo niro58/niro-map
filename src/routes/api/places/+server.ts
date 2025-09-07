@@ -1,10 +1,10 @@
-import { Database } from '$lib/server/db.js';
+import { db } from '$lib/server/db.js';
 import type { PlaceRequest } from '$lib/types.js';
 import { urlParamsToJson } from '$lib/utils.js';
 import { json } from '@sveltejs/kit';
 
 export async function GET(event) {
-    if (!Database.client) {
+    if (!db) {
         return json({ error: "Database not configured" }, { status: 500 });
     }
 
@@ -133,6 +133,6 @@ export async function GET(event) {
         ORDER BY confidence desc
         ${limit ? `LIMIT $${limitParamIndex}` : ''}
     `;
-    const result = await Database.client.query(sql, values);
+    const result = await db.query(sql, values);
     return json(result.rows);
 }
