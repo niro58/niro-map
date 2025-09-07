@@ -15,11 +15,17 @@ const config = {
 			mode: 'auto',
 			directives: {
 				'default-src': ['self'],
-				'script-src': ['self', 'plausible.io', 'blob:'],
+                'script-src': ['self', 'https://plausible.io', 'https://*.plausible.io', 'blob:'],
 				'style-src': ['self', 'unsafe-inline'],
 				'img-src': ['self', 'data:'],
 				'font-src': ['self'],
-				'connect-src': ['self', 'plausible.io', 'tiles.openfreemap.org'],
+				'connect-src': [
+					'self',
+					'https://plausible.io',
+					'https://*.plausible.io',
+					'https://tiles.openfreemap.org',
+					'https://maps.api.arenarium.dev'
+				],
 				'object-src': ['none']
 			}
 		}
