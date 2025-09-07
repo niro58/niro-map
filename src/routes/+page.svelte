@@ -180,7 +180,7 @@
 						{selectedLimit}
 					</Select.Trigger>
 					<Select.Content class="max-h-60">
-						{#each ['1000', '2500', '10000'] as limit}
+						{#each ['500', '1000', '2500', '5000', '10000'] as limit}
 							<Select.Item label={limit} value={limit} />
 						{/each}
 					</Select.Content>

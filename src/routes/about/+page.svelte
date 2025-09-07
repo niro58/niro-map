@@ -6,7 +6,7 @@
 	import Seo from '$lib/components/ui/seo/seo.svelte';
 
 	const githubUrl = 'https://github.com/niro58/niro-map';
-	const kofiUrl = 'https://ko-fi.com/niro58';
+	const buyMeACoffeeUrl = 'https://buymeacoffee.com/nirodev01n';
 </script>
 
 <Seo
@@ -82,7 +82,7 @@
 
 		<Card.Footer class="flex flex-col gap-3">
 			<div class="flex gap-2">
-				<Button href={kofiUrl} target="_blank" rel="noopener">Support the project</Button>
+				<Button href={buyMeACoffeeUrl} target="_blank" rel="noopener">Buy me a coffee</Button>
 				<Button variant="outline" href={githubUrl} target="_blank" rel="noopener"
 					>View on GitHub</Button
 				>
