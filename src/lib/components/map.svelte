@@ -42,7 +42,6 @@
 		defaultPlacedPin?: { radius: number; point: { lat: number; lon: number } };
 	} = $props();
 
-	// const LIMIT = 100;
 	let mapManager: MapManager;
 	let map: maplibregl.Map | undefined = $state();
 	let mapContainer: HTMLDivElement;
@@ -67,7 +66,7 @@
 		map.on('click', onMapClick);
 		map.on('style.load', () => {
 			if (defaultPlacedPin && defaultPlacedPin.point) {
-				isPlacingPin = true;
+			
 				pinLocation = defaultPlacedPin.point;
 				pinRadiusKm = defaultPlacedPin.radius;
 				updateRadiusCircle(pinLocation, pinRadiusKm);
@@ -229,7 +228,6 @@
 	function handleSearch() {
 		if (!pinLocation) return;
 		onPinPlaced?.(pinRadiusKm, pinLocation);
-		// Clean up after search
 		togglePinPlacement();
 	}
 
@@ -311,7 +309,7 @@
 	function onMapClick(e: maplibregl.MapMouseEvent & { lngLat: maplibregl.LngLat }) {
 		if (isPlacingPin) {
 			pinLocation = { lat: e.lngLat.lat, lon: e.lngLat.lng };
-			isPlacingPin = false; // Exit placement mode after dropping a pin
+			isPlacingPin = false;
 			if (map) map.getCanvas().style.cursor = '';
 		} else {
 			mapManager.hidePopup();
@@ -325,7 +323,7 @@
 			<Button variant="outline" size="sm" class="animate-pulse">Updating markers...</Button>
 		</div>
 	{/if}
-	<div class="absolute top-4 left-16 z-50 flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg">
+	<div class="absolute top-4 left-16 z-[9999999999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg ">
 		<Button onclick={togglePinPlacement} variant="outline">
 			{#if isPlacingPin}
 				<X class="mr-2 h-4 w-4" />
@@ -356,7 +354,7 @@
 			<div class="mt-2 text-sm text-muted-foreground">Click on any point on the map</div>
 		{/if}
 	</div>
-	<div class="absolute top-4 right-16 z-50 flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg">
+	<div class="absolute top-4 right-16 z-[9999999999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg">
 		<Button
 			onclick={() => {
 				averageCenter();

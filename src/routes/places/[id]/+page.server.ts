@@ -5,7 +5,6 @@ export async function load({ params }) {
     if (!db) {
         throw new Error("Database not configured");
     }
-    console.log("Fetching place with id:", params.id);
     const result = await db.query(
         `
        SELECT 

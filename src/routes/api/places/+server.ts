@@ -10,12 +10,12 @@ export async function GET(event) {
     }
     let urlParams = extractParams(event.url.searchParams, getPlacesFilters);
 
-    let confidenceMin = urlParams.confidenceMin;
-    let confidenceMax = urlParams.confidenceMax;
-    if (confidenceMin > 1) {
+    let confidenceMin = urlParams.confidenceMin && getPlacesFilters.confidenceMin.default !== urlParams.confidenceMin ? urlParams.confidenceMin : undefined;
+    let confidenceMax = urlParams.confidenceMax && getPlacesFilters.confidenceMax.default !== urlParams.confidenceMax ? urlParams.confidenceMax : undefined;
+    if (confidenceMin && confidenceMin > 1) {
         confidenceMin /= 100;
     }
-    if (confidenceMax > 1) {
+    if (confidenceMax && confidenceMax > 1) {
         confidenceMax /= 100;
     }
 
@@ -34,21 +34,19 @@ export async function GET(event) {
     const values: any[] = [];
     let idx = 1;
     const where: string[] = [];
-    if (urlParams.category && urlParams.category.length > 0) {
-        values.push(urlParams.category);
-        where.push(`( "categories.primary" = ANY($${idx}::varchar[]))`);
-        idx++;
-    }
-
+    
     // countries: addresses is jsonb array of objects -> country
     if (urlParams.country && urlParams.country.length > 0) {
         values.push(urlParams.country);
         where.push(
-            `EXISTS (
-                SELECT 1 FROM jsonb_array_elements(addresses) AS addr(item)
-                WHERE (item->>'country') = ANY($${idx})
-            )`
+            `country_code = ANY($${idx})`
         );
+        idx++;
+    }
+
+    if (urlParams.category && urlParams.category.length > 0) {
+        values.push(urlParams.category);
+        where.push(`( "categories.primary" = ANY($${idx}::varchar[]))`);
         idx++;
     }
 
@@ -113,6 +111,8 @@ export async function GET(event) {
         ${urlParams.limit ? `LIMIT $${limitParamIndex}` : ''}
         ${urlParams.offset ? `OFFSET $${offsetParamIndex}` : ''}
     `;
+
+
     const result = await db.query(sql, values);
     return json(result.rows);
 }

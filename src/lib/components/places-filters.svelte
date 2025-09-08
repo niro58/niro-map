@@ -12,6 +12,7 @@
 	import type { GetPlacesFilters, PlaceResponse } from '$lib/types';
 	import { triggerFilter } from '$lib/filters';
 	import type { Snippet } from 'svelte';
+	import { Check, X } from '@lucide/svelte';
 
 	const {
 		filters: initialFilters,
@@ -91,33 +92,43 @@
 		</div>
 		<div class="flex flex-col gap-2">
 			<Label for="country-select">Countries</Label>
-			<Select.Root
-				type="multiple"
-				value={filters.country}
-				onValueChange={(v) => {
-					updateKey('country', v.length > 0 ? v : undefined);
-				}}
-			>
-				<Select.Trigger id="country-select" class="w-full">
-					{#if filters.country.length === 0}
-						Select countries
-					{:else}
-						<div class="flex flex-row gap-1">
-							{#each filters.country.slice(0, 3) as country, i (country)}
-								<Badge>{country}</Badge>
-							{/each}
-							{#if filters.country.length > 3}
-								<span class="muted">+{filters.country.length - 3} more</span>
-							{/if}
-						</div>
-					{/if}
-				</Select.Trigger>
-				<Select.Content class="max-h-60">
-					{#each countries as country}
-						<Select.Item label={country} value={country} />
-					{/each}
-				</Select.Content>
-			</Select.Root>
+			<div class="flex flex-row gap-2">
+				<Select.Root
+					type="multiple"
+					value={filters.country}
+					onValueChange={(v) => {
+						updateKey('country', v.length > 0 ? v : undefined);
+					}}
+				>
+					<Select.Trigger id="country-select" class="w-full">
+						{#if filters.country.length === 0}
+							Select countries
+						{:else}
+							<div class="flex flex-row gap-1">
+								{#each filters.country.slice(0, 3) as country, i (country)}
+									<Badge>{country}</Badge>
+								{/each}
+								{#if filters.country.length > 3}
+									<span class="muted">+{filters.country.length - 3} more</span>
+								{/if}
+							</div>
+						{/if}
+					</Select.Trigger>
+					<Select.Content class="max-h-60">
+						{#each countries as country}
+							<Select.Item label={country} value={country} />
+						{/each}
+					</Select.Content>
+				</Select.Root>
+				<Button
+					size="icon"
+					onclick={() => {
+						updateKey('country', undefined);
+					}}
+				>
+					<X />
+				</Button>
+			</div>
 		</div>
 		<div class="flex flex-col gap-2">
 			<Label for="limit-select">Limit</Label>
@@ -157,8 +168,10 @@
 						size="sm"
 						onclick={() => {
 							updateKey('category', [...new Set([...filters.category, ...categories])]);
-						}}>Select All</Button
+						}}
 					>
+						Select
+					</Button>
 					<Button
 						variant="outline"
 						size="sm"
@@ -168,8 +181,10 @@
 								'category',
 								categories.filter((c) => !categories.includes(c))
 							);
-						}}>Deselect</Button
+						}}
 					>
+						Clear
+					</Button>
 				</div>
 				<Accordion.Content class="flex flex-col gap-2 p-2">
 					{#each categories as category}

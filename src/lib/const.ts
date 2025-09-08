@@ -380,7 +380,6 @@ export const countries = [
     "UG",
     "UK",
     "UM",
-    "United States",
     "US",
     "UY",
     "UZ",

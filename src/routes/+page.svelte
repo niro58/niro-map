@@ -2,17 +2,9 @@
 	import { env } from '$env/dynamic/public';
 	import { getMapPlaces } from '$lib/api';
 	import Map from '$lib/components/map.svelte';
-	import type { GetPlacesFilters, PlaceResponse } from '$lib/types';
-	import { cleanCategory, gotoFilter, type ResultClient, type ResultFetch } from '$lib/utils';
-	import * as Accordion from '$lib/components/ui/accordion/index';
-	import { CATEGORIES, countries } from '$lib/const';
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
-	import Label from '$lib/components/ui/label/label.svelte';
-	import { page } from '$app/state';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import Slider from '$lib/components/ui/slider/slider.svelte';
-	import * as Select from '$lib/components/ui/select/index';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import type {  PlaceResponse } from '$lib/types';
+	import {  type ResultClient } from '$lib/utils';
+
 	import Seo from '$lib/components/ui/seo/seo.svelte';
 	import { triggerFilter } from '$lib/filters';
 	import PlacesFilters from '$lib/components/places-filters.svelte';

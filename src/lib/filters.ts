@@ -57,7 +57,7 @@ export function extractParams<T extends Record<string, ExtractParamValueDefiniti
 			urlValue = urlValueStr;
 		} else if (value.type === 'number' && urlValueStr) {
 			const num = parseInt(urlValueStr);
-			if (!isNaN(num) && (value.max === undefined || num <= value.max) && num >= 0) {
+			if (!isNaN(num) && (value.max === undefined || num <= value.max)) {
 				urlValue = num;
 			}
 		} else if (value.type === 'boolean' && urlValueStr) {

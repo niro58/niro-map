@@ -13,9 +13,15 @@
 		<span class="font-semibold">Niro Maps</span>
 	</a>
 	<div class="flex flex-row gap-2">
-		<Button variant="outline" href={`/${page.url.search}`}>Map</Button>
-		<Button variant="outline" href={`/places${page.url.search}`}>Browser</Button>
-		<Button variant="outline" href="/about">About</Button>
+		<Button variant={page.route.id === '/' ? 'default' : 'outline'} href={`/${page.url.search}`}
+			>Map</Button
+		>
+		<Button
+			variant={page.route.id === '/places' ? 'default' : 'outline'}
+			href={`/places${page.url.search}`}>Browser</Button
+		>
+		<Button variant={page.route.id === '/about' ? 'default' : 'outline'} href="/about">About</Button
+		>
 	</div>
 </nav>
 
