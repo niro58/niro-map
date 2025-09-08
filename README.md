@@ -20,6 +20,7 @@ Map visualizer of popular places — a small personal project for exploring poin
 - Data: Overture places
 
 ## Contributing
+
 If you plan to contribute or run the project locally, please contact me for instructions. The data nor db is not included in the repository as this was initially developed as a solo project.
 
 ## Support & Sponsorship
@@ -30,7 +31,22 @@ This is a personal project done for fun. If you'd like me to focus more time on 
 
 - This project is experimental, done as a weekend project; some features and code may be rough around edges.
 
-
 ## Todo
 
-- [ ] Fix refetching on filter change
+- [x] Fix refetching on filter change
+- [ ] investigate WARNING: Too many active WebGL contexts. Oldest context will be lost.
+      \_setupPainter @ map.ts:3183
+      e.Map @ map.ts:681
+      m @ maplibre.es.js:9
+      (anonymous) @ map.svelte:52
+      untrack @ runtime.js:732
+      $effect @ index-client.js:100
+      update_reaction @ runtime.js:292
+      update_effect @ runtime.js:472
+      flush_queued_effects @ batch.js:607
+      process @ batch.js:233
+      flush_effects @ batch.js:562
+      flush @ batch.js:381
+      (anonymous) @ batch.js:460
+      dequeue @ batch.js:69
+- [ ] optimize country, category queries, takes too long

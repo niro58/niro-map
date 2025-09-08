@@ -1,5 +1,6 @@
+import { extractParams } from '$lib/filters.js';
 import { db } from '$lib/server/db.js';
-import type { PlaceRequest } from '$lib/types.js';
+import { getPlacesFilters } from '$lib/types.js';
 import { urlParamsToJson } from '$lib/utils.js';
 import { json } from '@sveltejs/kit';
 
@@ -7,47 +8,25 @@ export async function GET(event) {
     if (!db) {
         return json({ error: "Database not configured" }, { status: 500 });
     }
+    let urlParams = extractParams(event.url.searchParams, getPlacesFilters);
 
-    const reqParams = urlParamsToJson(event.url.searchParams) as unknown as PlaceRequest;
-    const limit = Math.min(Math.max(0, Number(reqParams.limit) || 10000), 10000);
-
-    const categories = reqParams.categories ? reqParams.categories.split(",").map(c => c.trim()).filter(Boolean) : null;
-    const countries = reqParams.countries ? reqParams.countries.split(",").map(c => c.trim().toUpperCase()).filter(Boolean) : null;
-    let confidenceMin, confidenceMax;
-
-    if (reqParams.confidenceMin != null) {
-        const min = Number(reqParams.confidenceMin);
-        if (!isNaN(min) && min > 0) {
-            confidenceMin = min;
-        }
+    let confidenceMin = urlParams.confidenceMin;
+    let confidenceMax = urlParams.confidenceMax;
+    if (confidenceMin > 1) {
+        confidenceMin /= 100;
+    }
+    if (confidenceMax > 1) {
+        confidenceMax /= 100;
     }
 
-    if (reqParams.confidenceMax != null) {
-        const max = Number(reqParams.confidenceMax);
-        if (!isNaN(max) && max < 100) {
-            confidenceMax = max;
-        }
-    }
-
-    // Normalize valid numbers to be between 0 and 1
-    if (confidenceMin != null && confidenceMin > 1) {
-        confidenceMin = confidenceMin / 100;
-    }
-    if (confidenceMax != null && confidenceMax > 1) {
-        confidenceMax = confidenceMax / 100;
-    }
-
-    let radiusMeters: number | undefined;
-    let latNum: number | undefined;
-    let lonNum: number | undefined;
-    if (reqParams.latitude && reqParams.longitude && reqParams.radius) {
-        const lat = Number(reqParams.latitude);
-        const lon = Number(reqParams.longitude);
-        const radiusKm = Number(reqParams.radius);
-        if (!isNaN(lat) && !isNaN(lon) && !isNaN(radiusKm) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180 && radiusKm > 0) {
-            latNum = lat;
-            lonNum = lon;
-            radiusMeters = Math.max(0, radiusKm) * 1000;
+    let latFilter: number | undefined = undefined;
+    let lonFilter: number | undefined = undefined;
+    let radiusMeters: number | undefined = undefined;
+    if (urlParams.latitude && urlParams.longitude && urlParams.radius) {
+        if (Math.abs(urlParams.latitude) <= 90 && Math.abs(urlParams.longitude) <= 180 && urlParams.radius > 0) {
+            latFilter = urlParams.latitude;
+            lonFilter = urlParams.longitude;
+            radiusMeters = Math.max(0, urlParams.radius) * 1000;
         }
     }
 
@@ -55,15 +34,15 @@ export async function GET(event) {
     const values: any[] = [];
     let idx = 1;
     const where: string[] = [];
-    if (categories) {
-        values.push(categories);
+    if (urlParams.category && urlParams.category.length > 0) {
+        values.push(urlParams.category);
         where.push(`( "categories.primary" = ANY($${idx}::varchar[]))`);
         idx++;
     }
 
     // countries: addresses is jsonb array of objects -> country
-    if (countries) {
-        values.push(countries);
+    if (urlParams.country && urlParams.country.length > 0) {
+        values.push(urlParams.country);
         where.push(
             `EXISTS (
                 SELECT 1 FROM jsonb_array_elements(addresses) AS addr(item)
@@ -86,8 +65,8 @@ export async function GET(event) {
     }
 
     // spatial filter: ST_DWithin using geography for meters; ensure params order lon, lat, meters
-    if (radiusMeters !== undefined && latNum !== undefined && lonNum !== undefined) {
-        values.push(lonNum, latNum, radiusMeters);
+    if (radiusMeters && latFilter && lonFilter) {
+        values.push(lonFilter, latFilter, radiusMeters);
         where.push(
             `ST_DWithin(
                 geometry::geography,
@@ -98,15 +77,18 @@ export async function GET(event) {
         idx += 3;
     }
 
-    // final limit param
-    if (limit) {
-        values.push(limit);
+    if (urlParams.limit) {
+        values.push(urlParams.limit);
     }
-
     const limitParamIndex = idx;
     idx++;
 
-    // optimized select: normalize confidence on output, include lat/lon, keep required columns
+    const offsetParamIndex = idx;
+    if (urlParams.offset) {
+        values.push(urlParams.offset);
+    }
+
+
     const sql = `
         SELECT
             ogc_fid,
@@ -128,7 +110,8 @@ export async function GET(event) {
         FROM public.places
         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
         ORDER BY confidence desc
-        ${limit ? `LIMIT $${limitParamIndex}` : ''}
+        ${urlParams.limit ? `LIMIT $${limitParamIndex}` : ''}
+        ${urlParams.offset ? `OFFSET $${offsetParamIndex}` : ''}
     `;
     const result = await db.query(sql, values);
     return json(result.rows);

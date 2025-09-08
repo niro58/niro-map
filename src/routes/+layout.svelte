@@ -3,6 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import NiroLogo from '$lib/components/ui/niro-logo.svelte';
+	import { page } from '$app/state';
 	let { children } = $props();
 </script>
 
@@ -12,7 +13,8 @@
 		<span class="font-semibold">Niro Maps</span>
 	</a>
 	<div class="flex flex-row gap-2">
-		<Button variant="outline" href="/">Map</Button>
+		<Button variant="outline" href={`/${page.url.search}`}>Map</Button>
+		<Button variant="outline" href={`/places${page.url.search}`}>Browser</Button>
 		<Button variant="outline" href="/about">About</Button>
 	</div>
 </nav>

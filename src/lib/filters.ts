@@ -12,6 +12,7 @@ export type ExtractParamValueDefinition =
 	| {
 		type: 'number';
 		default?: number;
+		max?: number;
 	}
 	| {
 		type: 'boolean';
@@ -56,7 +57,7 @@ export function extractParams<T extends Record<string, ExtractParamValueDefiniti
 			urlValue = urlValueStr;
 		} else if (value.type === 'number' && urlValueStr) {
 			const num = parseInt(urlValueStr);
-			if (!isNaN(num)) {
+			if (!isNaN(num) && (value.max === undefined || num <= value.max) && num >= 0) {
 				urlValue = num;
 			}
 		} else if (value.type === 'boolean' && urlValueStr) {
@@ -91,6 +92,12 @@ export function extractParams<T extends Record<string, ExtractParamValueDefiniti
 export function triggerFilter<TDefs extends Record<string, ExtractParamValueDefinition>>(
 	filters: ExtractedParams<TDefs>
 ): void {
+	const urlParams = getFilterSearchParams(filters);
+	gotoFilter(`${page.url.pathname}?${urlParams.toString()}`);
+}
+export function getFilterSearchParams<TDefs extends Record<string, ExtractParamValueDefinition>>(
+	filters: ExtractedParams<TDefs>
+): URLSearchParams {
 	let urlParams = new URLSearchParams();
 	Object.entries(filters).forEach(([key, value]) => {
 		let paramValue: string | undefined = undefined;
@@ -99,16 +106,19 @@ export function triggerFilter<TDefs extends Record<string, ExtractParamValueDefi
 			if (!isNaN(value.getTime())) {
 				paramValue = dateToQueryString(value);
 			}
-		} else if (Array.isArray(value) && value.length > 0) {
-			paramValue = value.join(',');
+		} else if (Array.isArray(value)) {
+			if (value.length > 0) {
+				paramValue = value.join(',');
+			}
 		} else if (value !== undefined && value !== null && value !== '') {
 			paramValue = String(value);
 		}
+
 		if (paramValue !== undefined) {
 			urlParams.set(key, paramValue);
 		}
 	});
-	gotoFilter(`${page.url.pathname}?${urlParams.toString()}`);
+	return urlParams;
 }
 export function refreshPage(): void {
 	const basePath = page.url.pathname;

@@ -319,7 +319,7 @@
 	}
 </script>
 
-<div class="relative">
+<div class="relative h-full w-full">
 	{#if isUpdatingMarkers.type === 'LOADING'}
 		<div class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 transform">
 			<Button variant="outline" size="sm" class="animate-pulse">Updating markers...</Button>
@@ -335,7 +335,6 @@
 				Place Pin
 			{/if}
 		</Button>
-
 		{#if pinLocation}
 			<div class="flex w-64 flex-col gap-2 border-t pt-2">
 				<Label for="radius" class="text-sm font-medium">Radius: {pinRadiusKm.toFixed(1)} km</Label>
@@ -357,8 +356,16 @@
 			<div class="mt-2 text-sm text-muted-foreground">Click on any point on the map</div>
 		{/if}
 	</div>
-	<div></div>
-</div>
-<div class={cn('h-screen flex-1', className)}>
-	<div class="h-full w-full rounded-xl bg-gray-500" bind:this={mapContainer}></div>
+	<div class="absolute top-4 right-16 z-50 flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg">
+		<Button
+			onclick={() => {
+				averageCenter();
+			}}
+		>
+			Refocus
+		</Button>
+	</div>
+	<div class={cn('h-screen flex-1', className)}>
+		<div class="h-full w-full rounded-xl bg-gray-500" bind:this={mapContainer}></div>
+	</div>
 </div>

@@ -31,7 +31,6 @@ export function urlParamsToJson(searchParams: URLSearchParams): Record<string, s
 	const object: Record<string, string | string[]> = {};
 
 	searchParams.forEach((value, key) => {
-		console.log(value, key)
 		if (key in object) {
 			if (Array.isArray(object[key])) {
 				(object[key] as string[]).push(value);

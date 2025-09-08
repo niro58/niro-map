@@ -3,7 +3,11 @@
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
-
+@utility container {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 64rem;
+}
 :root {
 	--background: hsl(30, 100%, 98%);
 	--foreground: hsl(24, 30%, 12%);

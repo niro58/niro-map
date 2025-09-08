@@ -1,12 +1,29 @@
-import { getPlace } from "$lib/api"
+import { db } from "$lib/server/db";
+import type { PlaceResponse } from "$lib/types.js";
 
 export async function load({ params }) {
-    const place = await getPlace({ fid: params.id });
-
-    if (place.type === "FAILURE") {
-        throw new Error(place.error);
+    if (!db) {
+        throw new Error("Database not configured");
     }
+    console.log("Fetching place with id:", params.id);
+    const result = await db.query(
+        `
+       SELECT 
+        ogc_fid, id, version, sources, "names.primary", "categories.primary", "categories.alternate", confidence, websites, socials, emails, phones, "brand.names.primary", addresses,
+        ST_Y(geometry::geometry) AS latitude,
+        ST_X(geometry::geometry) AS longitude
+        FROM public.places
+            WHERE ogc_fid = $1 
+        LIMIT 1
+        `,
+        [
+            params.id
+        ],
+    )
+
+    const rows = result.rows
+
     return {
-        place: place.data
+        place: rows[0] as unknown as PlaceResponse || null
     }
 }

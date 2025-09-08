@@ -2,29 +2,34 @@
 	import { ChevronRight } from '@lucide/svelte';
 	import Button from './ui/button/button.svelte';
 	import type { PlaceResponse } from '$lib/types';
-	import { createEventDispatcher } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { cleanCategory, cleanWebsite, googleMapsLink, toArrayField } from '$lib/utils';
+	import { cleanCategory, cleanWebsite, cn, googleMapsLink, toArrayField } from '$lib/utils';
 	import Separator from './ui/separator/separator.svelte';
 
 	let {
 		place,
 		width,
-		height
+		height,
+		class: className
 	}: {
 		place: PlaceResponse;
 		width?: number;
 		height?: number;
+		class?: string;
 	} = $props();
 
 	const websites = toArrayField(place?.websites);
 	const socials = toArrayField(place?.socials);
 	const emails = toArrayField(place?.emails);
 	const phones = toArrayField(place?.phones);
+
+	const placesPath = `/places/${place?.ogc_fid}`;
 </script>
 
 <div
-	class="flex flex-col items-start rounded-xl bg-card text-card-foreground shadow-xl transition-all duration-300 ease-in-out"
+	class={cn(
+		'flex flex-col items-start rounded-xl bg-card text-card-foreground shadow-xl transition-all duration-300 ease-in-out',
+		className
+	)}
 	style="width: {width}px; "
 >
 	<!-- Header -->
@@ -91,6 +96,8 @@
 								class="ml-1 break-all text-primary hover:underline"
 								href={w}
 								target="_blank"
+								data-sveltekit-preload-data="off"
+							
 								rel="noopener">{cleanWebsite(w)}</a
 							>
 						{/each}
@@ -103,6 +110,7 @@
 							<a
 								class="ml-1 break-all text-primary hover:underline"
 								href={s}
+								data-sveltekit-preload-data="off"
 								target="_blank"
 								rel="noopener">{s}</a
 							>
@@ -126,6 +134,6 @@
 		</Button>
 
 		<!-- Continue button goes to place page; parent may also listen to 'continue' event -->
-		<Button href={`/places/${place.ogc_fid}`} target="_blank">Details</Button>
+		<Button href={placesPath} target="_blank">Details</Button>
 	</div>
 </div>

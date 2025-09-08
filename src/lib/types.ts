@@ -1,3 +1,5 @@
+import type { ExtractedParams, ExtractParamValueDefinition } from "./filters";
+
 export type PlaceResponse = {
     ogc_fid: number;
     id: string;
@@ -22,16 +24,46 @@ export type PlaceResponse = {
     latitude: number;
     longitude: number;
 }
-export type PlaceRequest = {
-    limit?: string; // number
-    countries?: string; // string[]
-    categories?: string; // string[]
-    confidenceMin?: string; // number
-    confidenceMax?: string; // number
-    latitude?: string; // number
-    longitude?: string; // number
-    radius?: string; // number in km
-}
+
 export type GetPlaceRequest = {
     fid: string;
 }
+
+export const getPlacesFilters = {
+    limit: {
+        type: "number",
+        default: 2500,
+        max: 10000
+    },
+    offset: {
+        type: "number"
+    },
+    country: {
+        type: "string[]",
+        default: []
+    },
+    category: {
+        type: "string[]",
+        default: []
+    },
+    confidenceMin: {
+        type: "number",
+        default: 0,
+        max: 100
+    },
+    confidenceMax: {
+        type: "number",
+        default: 100,
+        max: 100
+    },
+    latitude: {
+        type: "number"
+    },
+    longitude: {
+        type: "number"
+    },
+    radius: {
+        type: "number"
+    }
+} as const satisfies Record<string, ExtractParamValueDefinition>;
+export type GetPlacesFilters = ExtractedParams<typeof getPlacesFilters>;
