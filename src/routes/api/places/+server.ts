@@ -34,7 +34,7 @@ export async function GET(event) {
     const values: any[] = [];
     let idx = 1;
     const where: string[] = [];
-    
+
     // countries: addresses is jsonb array of objects -> country
     if (urlParams.country && urlParams.country.length > 0) {
         values.push(urlParams.country);
@@ -107,11 +107,12 @@ export async function GET(event) {
             ST_X(geometry::geometry) AS longitude
         FROM public.places
         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+        ORDER BY confidence desc
         ${urlParams.limit ? `LIMIT $${limitParamIndex}` : ''}
         ${urlParams.offset ? `OFFSET $${offsetParamIndex}` : ''}
     `;
 
-
+    console.log(sql);
     const result = await db.query(sql, values);
     return json(result.rows);
 }
