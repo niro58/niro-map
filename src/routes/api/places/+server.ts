@@ -107,7 +107,6 @@ export async function GET(event) {
             ST_X(geometry::geometry) AS longitude
         FROM public.places
         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
-        ORDER BY confidence desc
         ${urlParams.limit ? `LIMIT $${limitParamIndex}` : ''}
         ${urlParams.offset ? `OFFSET $${offsetParamIndex}` : ''}
     `;

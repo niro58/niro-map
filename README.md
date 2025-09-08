@@ -33,7 +33,6 @@ This is a personal project done for fun. If you'd like me to focus more time on 
 
 ## Todo
 
-- [x] Fix refetching on filter change
 - [ ] investigate WARNING: Too many active WebGL contexts. Oldest context will be lost.
       \_setupPainter @ map.ts:3183
       e.Map @ map.ts:681
@@ -49,4 +48,3 @@ This is a personal project done for fun. If you'd like me to focus more time on 
       flush @ batch.js:381
       (anonymous) @ batch.js:460
       dequeue @ batch.js:69
-- [ ] optimize country, category queries, takes too long

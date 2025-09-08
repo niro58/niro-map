@@ -64,6 +64,7 @@
 		filters={{ ...data.filters, limit: limit }}
 		{places}
 		limits={['25', '50', '100', '250']}
+		pagination={false}
 	>
 		{#snippet children({ updateKey })}
 			<div class="container flex flex-col">
