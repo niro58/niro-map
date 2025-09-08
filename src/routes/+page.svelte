@@ -15,41 +15,58 @@
 	import * as Select from '$lib/components/ui/select/index';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Seo from '$lib/components/ui/seo/seo.svelte';
+	import { extractParams } from '$lib/filters';
+
+	const { data } = $props();
+
 	let places: ResultClient<PlaceResponse[]> = $state({
 		type: 'NOT_ASKED'
 	});
 
+	let currentController: AbortController | null = null;
+
 	$effect(() => {
+		if (currentController) {
+			currentController.abort();
+			currentController = null;
+		}
+
+		const controller = new AbortController();
+		currentController = controller;
+
 		places = { type: 'LOADING' };
-		getMapPlaces({
-			limit: selectedLimit ? String(parseInt(selectedLimit)) : undefined,
-			countries: selectedCountries,
-			categories: activeCategories,
-			confidenceMin: String(confidenceRange[0]),
-			confidenceMax: String(confidenceRange[1]),
-			latitude: latitude,
-			longitude: longitude,
-			radius: radius
-		})
-			.then((res: ResultFetch<PlaceResponse[]>) => {
+
+		(async () => {
+			try {
+				const res = await getMapPlaces(
+					{
+						limit: selectedLimit ? String(parseInt(selectedLimit)) : undefined,
+						countries: selectedCountries,
+						categories: activeCategories,
+						confidenceMin: String(confidenceRange[0]),
+						confidenceMax: String(confidenceRange[1]),
+						latitude: latitude,
+						longitude: longitude,
+						radius: radius
+						// optional: if getMapPlaces accepts options, pass the signal
+						// signal: controller.signal
+					} as any /* cast if you extend the type */
+				);
+
+				if (controller.signal.aborted) return;
+
 				if (res.type === 'SUCCESS') {
-					places = {
-						type: 'SUCCESS',
-						data: res.data
-					};
+					places = { type: 'SUCCESS', data: res.data };
 				} else {
-					places = {
-						type: 'FAILURE',
-						error: res.error
-					};
+					places = { type: 'FAILURE', error: res.error };
 				}
-			})
-			.catch((err) => {
-				places = {
-					type: 'FAILURE',
-					error: err
-				};
-			});
+			} catch (err: any) {
+				if (err?.name === 'AbortError') return;
+				places = { type: 'FAILURE', error: err?.message ?? 'Unknown error' };
+			} finally {
+				if (currentController === controller) currentController = null;
+			}
+		})();
 	});
 
 	const activeCategories = $derived(page.url.searchParams.getAll('category'));

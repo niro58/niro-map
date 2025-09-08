@@ -9,12 +9,10 @@ export async function GET(event) {
     }
 
     const reqParams = urlParamsToJson(event.url.searchParams) as unknown as PlaceRequest;
-    // normalize/guard incoming params
     const limit = Math.min(Math.max(0, Number(reqParams.limit) || 10000), 10000);
 
-    const categories = reqParams.categories && reqParams.categories.length > 0 ? (Array.isArray(reqParams.categories) ? reqParams.categories : [reqParams.categories]) : null;
-    const countries = reqParams.countries && reqParams.countries.length > 0 ? (Array.isArray(reqParams.countries) ? reqParams.countries : [reqParams.countries]) : null;
-    // confidence in request may be 0-100 or 0-1; normalize to 0-1
+    const categories = reqParams.categories ? reqParams.categories.split(",").map(c => c.trim()).filter(Boolean) : null;
+    const countries = reqParams.countries ? reqParams.countries.split(",").map(c => c.trim().toUpperCase()).filter(Boolean) : null;
     let confidenceMin, confidenceMax;
 
     if (reqParams.confidenceMin != null) {
@@ -57,10 +55,9 @@ export async function GET(event) {
     const values: any[] = [];
     let idx = 1;
     const where: string[] = [];
-
     if (categories) {
         values.push(categories);
-        where.push(`( "categories.primary" = ANY($${idx}::varchar[]) OR ( "categories.alternate" && $${idx}::varchar[] ) )`);
+        where.push(`( "categories.primary" = ANY($${idx}::varchar[]))`);
         idx++;
     }
 

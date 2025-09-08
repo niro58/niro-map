@@ -29,3 +29,8 @@ This is a personal project done for fun. If you'd like me to focus more time on 
 ## Notes
 
 - This project is experimental, done as a weekend project; some features and code may be rough around edges.
+
+
+## Todo
+
+- [ ] Fix refetching on filter change

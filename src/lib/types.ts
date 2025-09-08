@@ -24,8 +24,8 @@ export type PlaceResponse = {
 }
 export type PlaceRequest = {
     limit?: string; // number
-    countries?: string[];
-    categories?: string[];
+    countries?: string; // string[]
+    categories?: string; // string[]
     confidenceMin?: string; // number
     confidenceMax?: string; // number
     latitude?: string; // number

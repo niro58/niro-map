@@ -31,6 +31,7 @@ export function urlParamsToJson(searchParams: URLSearchParams): Record<string, s
 	const object: Record<string, string | string[]> = {};
 
 	searchParams.forEach((value, key) => {
+		console.log(value, key)
 		if (key in object) {
 			if (Array.isArray(object[key])) {
 				(object[key] as string[]).push(value);
@@ -65,19 +66,29 @@ export function gotoFilter(link: string) {
 	});
 }
 export function toArrayField(field: any): string[] {
-		if (!field) return [];
-		if (Array.isArray(field)) return field.filter(Boolean).map(String);
-		if (typeof field === 'string') {
-			try {
-				const parsed = JSON.parse(field);
-				if (Array.isArray(parsed)) return parsed.map(String);
-				if (parsed && typeof parsed === 'object')
-					return Object.values(parsed).map(String).filter(Boolean);
-			} catch {}
-			return field
-				.split(/[\n,;]+/)
-				.map((s) => s.trim())
-				.filter(Boolean);
-		}
-		return [String(field)];
+	if (!field) return [];
+	if (Array.isArray(field)) return field.filter(Boolean).map(String);
+	if (typeof field === 'string') {
+		try {
+			const parsed = JSON.parse(field);
+			if (Array.isArray(parsed)) return parsed.map(String);
+			if (parsed && typeof parsed === 'object')
+				return Object.values(parsed).map(String).filter(Boolean);
+		} catch { }
+		return field
+			.split(/[\n,;]+/)
+			.map((s) => s.trim())
+			.filter(Boolean);
 	}
+	return [String(field)];
+}
+
+export function dateToQueryString(date: Date | undefined): string {
+	if (!date) {
+		return '';
+	}
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+}
