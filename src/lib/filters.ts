@@ -15,6 +15,11 @@ export type ExtractParamValueDefinition =
 		max?: number;
 	}
 	| {
+		type: 'float';
+		default?: number;
+		max?: number;
+	}
+	| {
 		type: 'boolean';
 		default?: boolean;
 	}
@@ -57,6 +62,12 @@ export function extractParams<T extends Record<string, ExtractParamValueDefiniti
 			urlValue = urlValueStr;
 		} else if (value.type === 'number' && urlValueStr) {
 			const num = parseInt(urlValueStr);
+			if (!isNaN(num) && (value.max === undefined || num <= value.max)) {
+				urlValue = num;
+			}
+		}
+		else if (value.type === 'float' && urlValueStr) {
+			const num = parseFloat(urlValueStr);
 			if (!isNaN(num) && (value.max === undefined || num <= value.max)) {
 				urlValue = num;
 			}

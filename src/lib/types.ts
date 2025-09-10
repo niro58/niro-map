@@ -57,10 +57,10 @@ export const getPlacesFilters = {
         max: 100
     },
     latitude: {
-        type: "number"
+        type: "float"
     },
     longitude: {
-        type: "number"
+        type: "float"
     },
     radius: {
         type: "number"
