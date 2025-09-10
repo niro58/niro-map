@@ -133,7 +133,7 @@
 					{#if websites.length > 0 || socials.length > 0}
 						<div>
 							<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-								<Globe class="h-4 w-4" /> Online
+								<Globe class="h-4 w-4" /> Websites & Socials
 							</h3>
 							<div class="flex flex-col gap-1.5">
 								{#each websites as w}
@@ -243,6 +243,7 @@
 					class="mt-6 aspect-video h-auto w-full overflow-hidden rounded-md border border-border"
 				>
 					<Map
+						actionButtons={false}
 						places={{ type: 'SUCCESS', data: [place] }}
 						initialZoom={10}
 						center={mapCenterWithOffset as [number, number]}

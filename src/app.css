@@ -120,6 +120,10 @@
 		/* --arenarium-maps-tooltip-background: ...;
 	--arenarium-maps-tooltip-shadow: ...;
 	--arenarium-maps-tooltip-shadow-hover: ...; */;
+
+	--font-sans: 'Plus Jakarta Sans', sans-serif;
+	--font-serif: Lora, serif;
+	--font-mono: Roboto Mono, monospace;
 }
 
 @layer base {

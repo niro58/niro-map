@@ -112,7 +112,6 @@ export async function GET(event) {
         ${urlParams.offset ? `OFFSET $${offsetParamIndex}` : ''}
     `;
 
-    console.log(sql);
     const result = await db.query(sql, values);
     return json(result.rows);
 }

@@ -97,7 +97,6 @@
 								href={w}
 								target="_blank"
 								data-sveltekit-preload-data="off"
-							
 								rel="noopener">{cleanWebsite(w)}</a
 							>
 						{/each}
@@ -128,12 +127,13 @@
 			variant="outline"
 			href={googleMapsLink(place.latitude, place.longitude)}
 			target="_blank"
+			class="w-full md:w-auto"
 			rel="noopener"
 		>
 			<ChevronRight class="h-4 w-4 rotate-90" /> Google Maps
 		</Button>
 
 		<!-- Continue button goes to place page; parent may also listen to 'continue' event -->
-		<Button href={placesPath} target="_blank">Details</Button>
+		<Button class="w-full md:w-auto" href={placesPath} target="_blank">Details</Button>
 	</div>
 </div>

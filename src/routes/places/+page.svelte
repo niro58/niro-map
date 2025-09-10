@@ -73,7 +73,7 @@
 						No places found with the current filters.
 					</div>
 				{:else if places.type === 'SUCCESS'}
-					<div class="grid grid-cols-3">
+					<div class="grid grid-cols-1 md:grid-cols-3">
 						{#each places.data as place (place.id)}
 							<div class="m-2">
 								<Popup {place} class="h-full" />
@@ -83,6 +83,7 @@
 					<div class="mt-12 flex flex-row items-center justify-center gap-4">
 						<Button
 							disabled={!(data.filters.offset > 0)}
+							
 							onclick={() => {
 								updateKey('offset', Math.max(0, (data.filters.offset || 0) - limit));
 								window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,6 +103,14 @@
 							Next Page
 							<ChevronLeft class="rotate-180" />
 						</Button>
+					</div>
+				{:else if places.type === 'LOADING' || places.type === 'NOT_ASKED'}
+					<div class="col-span-3 p-4 text-center text-sm text-muted-foreground">
+						Loading places...
+					</div>
+				{:else if places.type === 'FAILURE'}
+					<div class="col-span-3 p-4 text-center text-sm text-destructive">
+						Error loading places: {places.error}
 					</div>
 				{/if}
 			</div>

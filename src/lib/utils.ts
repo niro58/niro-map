@@ -91,3 +91,14 @@ export function dateToQueryString(date: Date | undefined): string {
 	const day = String(date.getDate()).padStart(2, '0');
 	return `${year}-${month}-${day}`;
 }
+
+
+import { MediaQuery } from 'svelte/reactivity';
+
+const MOBILE_BREAKPOINT = 768;
+
+export class IsMobile extends MediaQuery {
+	constructor() {
+		super(`max-width: ${MOBILE_BREAKPOINT - 1}px`);
+	}
+}

@@ -4,7 +4,7 @@
 	import { MapManager, type MapMarker } from '@arenarium/maps';
 	import { MaplibreProvider, MaplibreLightStyle } from '@arenarium/maps/maplibre';
 	import '@arenarium/maps/dist/style.css';
-	import { Minimize2, Expand, X, LocateFixed } from '@lucide/svelte';
+	import { X, LocateFixed } from '@lucide/svelte';
 	import maplibregl from 'maplibre-gl';
 	import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -27,7 +27,8 @@
 		center,
 		toAverageCenter = true,
 		onPinPlaced,
-		defaultPlacedPin
+		defaultPlacedPin,
+		actionButtons = true
 	}: {
 		places: ResultClient<PlaceResponse[]>;
 		endpoint?: string;
@@ -40,6 +41,7 @@
 			point: { lat: number; lon: number } | undefined
 		) => void;
 		defaultPlacedPin?: { radius: number; point: { lat: number; lon: number } };
+		actionButtons?: boolean;
 	} = $props();
 
 	let mapManager: MapManager;
@@ -66,7 +68,6 @@
 		map.on('click', onMapClick);
 		map.on('style.load', () => {
 			if (defaultPlacedPin && defaultPlacedPin.point) {
-			
 				pinLocation = defaultPlacedPin.point;
 				pinRadiusKm = defaultPlacedPin.radius;
 				updateRadiusCircle(pinLocation, pinRadiusKm);
@@ -323,46 +324,53 @@
 			<Button variant="outline" size="sm" class="animate-pulse">Updating markers...</Button>
 		</div>
 	{/if}
-	<div class="absolute top-4 left-16 z-[9999999999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg ">
-		<Button onclick={togglePinPlacement} variant="outline">
-			{#if isPlacingPin}
-				<X class="mr-2 h-4 w-4" />
-				Cancel
-			{:else}
-				<LocateFixed class="mr-2 h-4 w-4" />
-				Place Pin
-			{/if}
-		</Button>
-		{#if pinLocation}
-			<div class="flex w-64 flex-col gap-2 border-t pt-2">
-				<Label for="radius" class="text-sm font-medium">Radius: {pinRadiusKm.toFixed(1)} km</Label>
-				<!-- Using a standard range input for simplicity. You can replace with your <Slider/> component -->
-				<Slider
-					type="single"
-					id="radius"
-					min={0.5}
-					max={1000}
-					step={2}
-					bind:value={pinRadiusKm}
-					class="w-full"
-				/>
-				<Input bind:value={pinRadiusKm} />
-
-				<Button onclick={handleSearch} size="sm">Search Area</Button>
-			</div>
-		{:else if isPlacingPin}
-			<div class="mt-2 text-sm text-muted-foreground">Click on any point on the map</div>
-		{/if}
-	</div>
-	<div class="absolute top-4 right-16 z-[9999999999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg">
-		<Button
-			onclick={() => {
-				averageCenter();
-			}}
+	{#if actionButtons}
+		<div
+			class="fixed bottom-4 left-4 z-[99999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:left-16"
 		>
-			Refocus
-		</Button>
-	</div>
+			<Button onclick={togglePinPlacement} variant="outline">
+				{#if isPlacingPin}
+					<X class="mr-2 h-4 w-4" />
+					Cancel
+				{:else}
+					<LocateFixed class="mr-2 h-4 w-4" />
+					Place Pin
+				{/if}
+			</Button>
+			{#if pinLocation}
+				<div class="flex w-64 flex-col gap-2 border-t pt-2">
+					<Label for="radius" class="text-sm font-medium">Radius: {pinRadiusKm.toFixed(1)} km</Label
+					>
+					<!-- Using a standard range input for simplicity. You can replace with your <Slider/> component -->
+					<Slider
+						type="single"
+						id="radius"
+						min={0.5}
+						max={1000}
+						step={2}
+						bind:value={pinRadiusKm}
+						class="w-full"
+					/>
+					<Input bind:value={pinRadiusKm} />
+
+					<Button onclick={handleSearch} size="sm">Search Area</Button>
+				</div>
+			{:else if isPlacingPin}
+				<div class="mt-2 text-sm text-muted-foreground">Click on any point on the map</div>
+			{/if}
+		</div>
+		<div
+			class="fixed right-4 bottom-4 z-[99999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:right-16"
+		>
+			<Button
+				onclick={() => {
+					averageCenter();
+				}}
+			>
+				Refocus
+			</Button>
+		</div>
+	{/if}
 	<div class={cn('h-screen flex-1', className)}>
 		<div class="h-full w-full rounded-xl bg-gray-500" bind:this={mapContainer}></div>
 	</div>
