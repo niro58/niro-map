@@ -5,6 +5,8 @@
 	let { children } = $props();
 </script>
 
-<Nav />
+<div class="flex h-screen flex-col">
+	<Nav />
 
-{@render children?.()}
+	{@render children?.()}
+</div>

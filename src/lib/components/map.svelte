@@ -371,7 +371,7 @@
 			</Button>
 		</div>
 	{/if}
-	<div class={cn('h-screen flex-1', className)}>
+	<div class={cn('h-full flex-1', className)}>
 		<div class="h-full w-full rounded-xl bg-gray-500" bind:this={mapContainer}></div>
 	</div>
 </div>
