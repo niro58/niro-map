@@ -4,17 +4,17 @@ export type PlaceResponse = {
     ogc_fid: number;
     id: string;
     version: number;
-    sources: { property: string; dataset: string; record_id: string; update_time: Date; confindence: number; }
+    sources: { property: string; dataset: string; record_id: string; update_time: Date; confidence: number; }[]
     "names.primary": string;
     "categories.primary": string;
     "categories.alternate": string[];
     confidence: number;
-    websites: string[] // ?
-    socials: string[];
-    emails: string[];
-    phones: string[];
+    websites?: string;
+    socials?: string[];
+    emails?: string[];
+    phones?: string[];
     "brand.names.primary": string;
-    addresses: {
+    addresses?: {
         freeform: string;
         locality: string;
         postcode: string;

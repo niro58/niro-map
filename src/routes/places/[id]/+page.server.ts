@@ -8,8 +8,8 @@ export async function load({ params }) {
     const result = await db.query(
         `
        SELECT 
-        ogc_fid, id, version, sources, "names.primary", "categories.primary", "categories.alternate", confidence, websites, socials, emails, phones, "brand.names.primary", addresses,
-        ST_Y(geometry::geometry) AS latitude,
+        ogc_fid, id, version, sources, "names.primary", "categories.primary", "categories.alternate", confidence, websites, socials, emails, phones, "brand.names.primary", addresses, sources
+,        ST_Y(geometry::geometry) AS latitude,
         ST_X(geometry::geometry) AS longitude
         FROM public.places
             WHERE ogc_fid = $1 
@@ -21,7 +21,6 @@ export async function load({ params }) {
     )
 
     const rows = result.rows
-
     return {
         place: rows[0] as unknown as PlaceResponse || null
     }

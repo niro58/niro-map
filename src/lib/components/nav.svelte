@@ -60,9 +60,8 @@
 		>
 			<div class=" items-center space-x-3">
 				<a href="/" aria-label="Home" class="flex flex-row items-end gap-2 text-xl font-semibold">
-					<NiroLogo
-						class="h-full w-8  transition-all duration-300 ease-in-out hover:border-primary hover:bg-primary/5 hover:fill-primary"
-					/>
+					<NiroLogo class="h-full w-8" />
+					<span class="hidden text-lg md:block">Niro Map</span>
 				</a>
 			</div>
 

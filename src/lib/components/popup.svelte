@@ -2,7 +2,7 @@
 	import { ChevronRight } from '@lucide/svelte';
 	import Button from './ui/button/button.svelte';
 	import type { PlaceResponse } from '$lib/types';
-	import { cleanCategory, cleanWebsite, cn, googleMapsLink, toArrayField } from '$lib/utils';
+	import { cleanCategory, cleanWebsite, cn, googleMapsLink } from '$lib/utils';
 	import Separator from './ui/separator/separator.svelte';
 
 	let {
@@ -17,12 +17,7 @@
 		class?: string;
 	} = $props();
 
-	const websites = toArrayField(place?.websites);
-	const socials = toArrayField(place?.socials);
-	const emails = toArrayField(place?.emails);
-	const phones = toArrayField(place?.phones);
-
-	const placesPath = `/places/${place?.ogc_fid}`;
+	const placesPath = `/places/${place.ogc_fid}`;
 </script>
 
 <div
@@ -73,46 +68,44 @@
 			<div>
 				<div class="text-sm font-medium">Contact & Links</div>
 				<div class="mt-1 space-y-1 text-sm">
-					{#if emails.length > 0}
+					{#if place.websites}
+						<div class="mb-3 truncate">
+							<a
+								class="ml-1 break-all text-primary hover:underline"
+								href={cleanWebsite(place.websites)}
+								target="_blank"
+								data-sveltekit-preload-data="off"
+								rel="noopener">{cleanWebsite(place.websites)}</a
+							>
+						</div>
+					{/if}
+					{#if place.emails && place.emails.length > 0}
+						<Separator />
 						<div class="truncate">
-							{#each emails as e}
-								<a class="ml-1 text-primary hover:underline" href={`mailto:${e}`}>{e}</a>
+							{#each place.emails as email}
+								<span class="ml-1 text-primary">{email}</span>
 							{/each}
 						</div>
 					{/if}
-					{#if phones.length > 0}
+					{#if place.phones && place.phones.length > 0}
 						<Separator />
 						<div class="truncate">
-							{#each phones as p}
-								<a class="ml-1 text-primary hover:underline" href={`tel:${p}`}>{p}</a>
+							{#each place.phones as phone}
+								<span class="ml-1 text-primary">{phone}</span>
 							{/each}
 						</div>
 					{/if}
 
-					{#if websites.length > 0}
-						<Separator />
-						<div class="truncate">
-							{#each websites as w}
-								<a
-									class="ml-1 break-all text-primary hover:underline"
-									href={w}
-									target="_blank"
-									data-sveltekit-preload-data="off"
-									rel="noopener">{cleanWebsite(w)}</a
-								>
-							{/each}
-						</div>
-					{/if}
-					{#if socials.length > 0}
+					{#if place.socials && place.socials.length > 0}
 						<Separator />
 						<div>
-							{#each socials as s}
+							{#each place.socials as social}
 								<a
 									class="ml-1 break-all text-primary hover:underline"
-									href={s}
+									href={social}
 									data-sveltekit-preload-data="off"
 									target="_blank"
-									rel="noopener">{s}</a
+									rel="noopener">{social}</a
 								>
 							{/each}
 						</div>

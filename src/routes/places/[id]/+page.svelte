@@ -3,6 +3,7 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Seo from '$lib/components/ui/seo/seo.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cleanCategory, cleanWebsite, googleMapsLink } from '$lib/utils.js';
 	import {
 		MapPin,
@@ -19,36 +20,12 @@
 
 	const place = data.place;
 
-	function toArrayField(field: any): string[] {
-		if (!field) return [];
-		if (Array.isArray(field)) return field.filter(Boolean).map(String);
-		if (typeof field === 'string') {
-			try {
-				const parsed = JSON.parse(field);
-				if (Array.isArray(parsed)) return parsed.map(String);
-				if (typeof parsed === 'object' && parsed !== null) {
-					return Object.values(parsed).map(String).filter(Boolean);
-				}
-			} catch {}
-			return field
-				.split(/[\n,;]+/)
-				.map((s) => s.trim())
-				.filter(Boolean);
-		}
-		return [String(field)];
-	}
-
-	const websites = toArrayField(place.websites);
-	const socials = toArrayField(place.socials);
-	const emails = toArrayField(place.emails);
-	const phones = toArrayField(place.phones);
-
 	function formatDate(s: string | Date | undefined) {
 		if (!s) return '';
 		const d = typeof s === 'string' ? new Date(s) : s;
 		return isNaN(d.getTime()) ? String(s) : d.toLocaleString();
 	}
-	const mapCenterWithOffset = [place.longitude, place.latitude - 0.14];
+	const mapCenterWithOffset = [place.longitude, place.latitude - 0.07];
 </script>
 
 <Seo
@@ -111,7 +88,7 @@
 							target="_blank"
 							rel="noopener"
 						>
-							<MapPin class="mr-2 h-4 w-4" /> Open in Maps
+							<MapPin class="mr-2 h-4 w-4" /> Open in Google Maps
 						</Button>
 					</div>
 				{:else}
@@ -130,21 +107,21 @@
 				<h2 class="text-xl font-semibold text-foreground">Contact Information</h2>
 				<div class="mt-4 space-y-4">
 					<!-- Websites & Socials -->
-					{#if websites.length > 0 || socials.length > 0}
-						<div>
-							<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-								<Globe class="h-4 w-4" /> Websites & Socials
-							</h3>
-							<div class="flex flex-col gap-1.5">
-								{#each websites as w}
-									<a
-										href={w}
-										target="_blank"
-										rel="noopener"
-										class="truncate text-primary hover:underline">{cleanWebsite(w)}</a
-									>
-								{/each}
-								{#each socials as s}
+					<div>
+						<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+							<Globe class="h-4 w-4" /> Websites & Socials
+						</h3>
+						<div class="flex flex-col gap-1.5">
+							{#if place.websites}
+								<a
+									href={cleanWebsite(place.websites)}
+									target="_blank"
+									rel="noopener"
+									class="truncate text-primary hover:underline">{cleanWebsite(place.websites)}</a
+								>
+							{/if}
+							{#if place.socials}
+								{#each place.socials as s}
 									<a
 										href={s}
 										target="_blank"
@@ -152,37 +129,37 @@
 										class="truncate text-primary hover:underline">{cleanWebsite(s)}</a
 									>
 								{/each}
-							</div>
+							{/if}
 						</div>
-					{/if}
+					</div>
 
 					<!-- Emails -->
-					{#if emails.length > 0}
-						<div>
-							<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-								<Mail class="h-4 w-4" /> Emails
-							</h3>
-							<div class="flex flex-col gap-1.5">
-								{#each emails as e}
+					<div>
+						<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+							<Mail class="h-4 w-4" /> Emails
+						</h3>
+						<div class="flex flex-col gap-1.5">
+							{#if place.emails && place.emails.length > 0}
+								{#each place.emails as e}
 									<a href={`mailto:${e}`} class="text-primary hover:underline">{e}</a>
 								{/each}
-							</div>
+							{/if}
 						</div>
-					{/if}
+					</div>
 
 					<!-- Phones -->
-					{#if phones.length > 0}
-						<div>
-							<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-								<Phone class="h-4 w-4" /> Phones
-							</h3>
-							<div class="flex flex-col gap-1.5">
-								{#each phones as p}
+					<div>
+						<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+							<Phone class="h-4 w-4" /> Phones
+						</h3>
+						<div class="flex flex-col gap-1.5">
+							{#if place.phones && place.phones.length > 0}
+								{#each place.phones as p}
 									<a href={`tel:${p}`} class="text-primary hover:underline">{p}</a>
 								{/each}
-							</div>
+							{/if}
 						</div>
-					{/if}
+					</div>
 				</div>
 			</section>
 
@@ -197,20 +174,29 @@
 						<p class="text-foreground">{place['brand.names.primary'] ?? 'Not available'}</p>
 					</div>
 
-					{#if place.sources}
-						<div>
-							<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
-								<Database class="h-4 w-4" /> Data Source
-							</h3>
-							<div class="text-sm">
-								<p class="font-medium text-foreground">{place.sources.dataset}</p>
-								<p class="text-muted-foreground">Record: {place.sources.record_id}</p>
-								<p class="text-muted-foreground">
-									Updated: {formatDate(place.sources.update_time)}
-								</p>
-							</div>
-						</div>
-					{/if}
+					<div>
+						<h3 class="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+							<Database class="h-4 w-4" /> Data Source
+						</h3>
+						{#if place.sources}
+							{#each place.sources as source, i}
+								{#if i > 0}
+									<Separator class="my-2" />
+								{/if}
+								<div class="text-sm">
+									<p class="text-muted-foreground italic">{source.property}</p>
+									<p class="font-medium text-foreground">Dataset: {source.dataset}</p>
+									<p class="text-muted-foreground">Record: {source.record_id}</p>
+									<p class="text-muted-foreground">
+										Updated: {formatDate(source.update_time)}
+									</p>
+									<p class="text-muted-foreground">
+										Confidence: {Math.round(source.confidence ? source.confidence * 100 : 0)}%
+									</p>
+								</div>
+							{/each}
+						{/if}
+					</div>
 				</div>
 			</section>
 		</div>

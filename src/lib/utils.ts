@@ -54,7 +54,8 @@ export function cleanWebsite(webRaw: string): string {
 }
 export function googleMapsLink(lat?: number, lon?: number) {
 	if (lat == null || lon == null) return '#';
-	return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lon}`)}`;
+	const latlon = `${lat},${lon}`;
+	return `https://www.google.com/maps/search/?api=1&query=${latlon}&query_place_id=&center=${latlon}&zoom=17`;
 }
 export function gotoFilter(link: string) {
 	goto(link, {
@@ -63,23 +64,6 @@ export function gotoFilter(link: string) {
 		noScroll: true,
 		keepFocus: true
 	});
-}
-export function toArrayField(field: any): string[] {
-	if (!field) return [];
-	if (Array.isArray(field)) return field.filter(Boolean).map(String);
-	if (typeof field === 'string') {
-		try {
-			const parsed = JSON.parse(field);
-			if (Array.isArray(parsed)) return parsed.map(String);
-			if (parsed && typeof parsed === 'object')
-				return Object.values(parsed).map(String).filter(Boolean);
-		} catch { }
-		return field
-			.split(/[\n,;]+/)
-			.map((s) => s.trim())
-			.filter(Boolean);
-	}
-	return [String(field)];
 }
 
 export function dateToQueryString(date: Date | undefined): string {
