@@ -2,8 +2,8 @@
 	import { env } from '$env/dynamic/public';
 	import { getMapPlaces } from '$lib/api';
 	import Map from '$lib/components/map.svelte';
-	import type {  PlaceResponse } from '$lib/types';
-	import {  type ResultClient } from '$lib/utils';
+	import type { PlaceResponse } from '$lib/types';
+	import { type ResultClient } from '$lib/utils';
 
 	import Seo from '$lib/components/ui/seo/seo.svelte';
 	import { triggerFilter } from '$lib/filters';
