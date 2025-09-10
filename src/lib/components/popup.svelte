@@ -27,95 +27,97 @@
 
 <div
 	class={cn(
-		'flex flex-col items-start rounded-xl bg-card text-card-foreground shadow-xl transition-all duration-300 ease-in-out',
+		'flex flex-col items-start justify-between rounded-xl bg-card text-card-foreground shadow-xl transition-all duration-300 ease-in-out',
 		className
 	)}
 	style="width: {width}px; "
 >
 	<!-- Header -->
-	<div class="w-full border-b border-border p-4">
-		<h3 class="truncate text-lg font-semibold" title={place['names.primary'] ?? place.id}>
-			{place['names.primary'] ?? place.id}
-		</h3>
-		<div class="mt-1 text-sm text-muted-foreground">
-			{cleanCategory(place['categories.primary'])}
-			{#if place['categories.alternate'] && place['categories.alternate'].length > 0}
-				· {place['categories.alternate'].map((v) => cleanCategory(v)).join(', ')}
-			{/if}
-		</div>
-		<div class="mt-2 text-xs text-muted-foreground">
-			Confidence: {Math.round((place.confidence ?? 0) * 100)}%
-		</div>
-	</div>
-
-	<div class="w-full space-y-3 p-4">
-		<!-- Address -->
-		{#if place.addresses && place.addresses.length > 0}
-			<div>
-				<div class="text-sm font-medium">Address</div>
-				<div class="text-sm text-foreground">
-					{#each place.addresses as addr, i}
-						<div class="mt-1">
-							<div>{addr.freeform ?? `${addr.locality ?? ''} ${addr.postcode ?? ''}`}</div>
-							<div class="text-xs text-muted-foreground">
-								{addr.locality}{#if addr.locality && addr.region},
-								{/if}{addr.region}{#if (addr.locality || addr.region) && addr.country},
-								{/if}{addr.country}
-							</div>
-						</div>
-					{/each}
-				</div>
+	<div class="w-full">
+		<div class="w-full border-b border-border p-4">
+			<h3 class="truncate text-lg font-semibold" title={place['names.primary'] ?? place.id}>
+				{place['names.primary'] ?? place.id}
+			</h3>
+			<div class="mt-1 text-sm text-muted-foreground">
+				{cleanCategory(place['categories.primary'])}
+				{#if place['categories.alternate'] && place['categories.alternate'].length > 0}
+					· {place['categories.alternate'].map((v) => cleanCategory(v)).join(', ')}
+				{/if}
 			</div>
-		{/if}
+			<div class="mt-2 text-xs text-muted-foreground">
+				Confidence: {Math.round((place.confidence ?? 0) * 100)}%
+			</div>
+		</div>
 
-		<!-- Contact & Links -->
-		<div>
-			<div class="text-sm font-medium">Contact & Links</div>
-			<div class="mt-1 space-y-1 text-sm">
-				{#if emails.length > 0}
-					<div class="truncate">
-						{#each emails as e}
-							<a class="ml-1 text-primary hover:underline" href={`mailto:${e}`}>{e}</a>
+		<div class="w-full space-y-3 p-4">
+			<!-- Address -->
+			{#if place.addresses && place.addresses.length > 0}
+				<div>
+					<div class="text-sm font-medium">Address</div>
+					<div class="text-sm text-foreground">
+						{#each place.addresses as addr, i}
+							<div class="mt-1">
+								<div>{addr.freeform ?? `${addr.locality ?? ''} ${addr.postcode ?? ''}`}</div>
+								<div class="text-xs text-muted-foreground">
+									{addr.locality}{#if addr.locality && addr.region},
+									{/if}{addr.region}{#if (addr.locality || addr.region) && addr.country},
+									{/if}{addr.country}
+								</div>
+							</div>
 						{/each}
 					</div>
-				{/if}
-				{#if phones.length > 0}
-					<Separator />
-					<div class="truncate">
-						{#each phones as p}
-							<a class="ml-1 text-primary hover:underline" href={`tel:${p}`}>{p}</a>
-						{/each}
-					</div>
-				{/if}
+				</div>
+			{/if}
 
-				{#if websites.length > 0}
-					<Separator />
-					<div class="truncate">
-						{#each websites as w}
-							<a
-								class="ml-1 break-all text-primary hover:underline"
-								href={w}
-								target="_blank"
-								data-sveltekit-preload-data="off"
-								rel="noopener">{cleanWebsite(w)}</a
-							>
-						{/each}
-					</div>
-				{/if}
-				{#if socials.length > 0}
-					<Separator />
-					<div>
-						{#each socials as s}
-							<a
-								class="ml-1 break-all text-primary hover:underline"
-								href={s}
-								data-sveltekit-preload-data="off"
-								target="_blank"
-								rel="noopener">{s}</a
-							>
-						{/each}
-					</div>
-				{/if}
+			<!-- Contact & Links -->
+			<div>
+				<div class="text-sm font-medium">Contact & Links</div>
+				<div class="mt-1 space-y-1 text-sm">
+					{#if emails.length > 0}
+						<div class="truncate">
+							{#each emails as e}
+								<a class="ml-1 text-primary hover:underline" href={`mailto:${e}`}>{e}</a>
+							{/each}
+						</div>
+					{/if}
+					{#if phones.length > 0}
+						<Separator />
+						<div class="truncate">
+							{#each phones as p}
+								<a class="ml-1 text-primary hover:underline" href={`tel:${p}`}>{p}</a>
+							{/each}
+						</div>
+					{/if}
+
+					{#if websites.length > 0}
+						<Separator />
+						<div class="truncate">
+							{#each websites as w}
+								<a
+									class="ml-1 break-all text-primary hover:underline"
+									href={w}
+									target="_blank"
+									data-sveltekit-preload-data="off"
+									rel="noopener">{cleanWebsite(w)}</a
+								>
+							{/each}
+						</div>
+					{/if}
+					{#if socials.length > 0}
+						<Separator />
+						<div>
+							{#each socials as s}
+								<a
+									class="ml-1 break-all text-primary hover:underline"
+									href={s}
+									data-sveltekit-preload-data="off"
+									target="_blank"
+									rel="noopener">{s}</a
+								>
+							{/each}
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 	</div>

@@ -116,7 +116,7 @@
 				tooltip: {
 					style: {
 						width: 120,
-						height: 80,
+						height: 90,
 						margin: 8,
 						radius: 12
 					},
@@ -169,7 +169,7 @@
 			props: {
 				place,
 				width: 120,
-				height: 80
+				height: 90
 			}
 		});
 		return element;
@@ -326,7 +326,7 @@
 	{/if}
 	{#if actionButtons}
 		<div
-			class="fixed bottom-4 left-4 z-[99999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:left-16"
+			class="fixed bottom-4 left-4 z-[99999999] flex h-fit flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:left-16"
 		>
 			<Button onclick={togglePinPlacement} variant="outline">
 				{#if isPlacingPin}
@@ -360,7 +360,7 @@
 			{/if}
 		</div>
 		<div
-			class="fixed right-4 bottom-4 z-[99999999] flex flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:right-16"
+			class="fixed right-4 bottom-4 z-[99999999] flex h-fit flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:right-16"
 		>
 			<Button
 				onclick={() => {

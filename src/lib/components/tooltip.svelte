@@ -37,7 +37,7 @@
 	{/if}
 
 	<!-- Confidence Score -->
-	<div class="text-xs text-muted-foreground/50">
+	<div class="text-[10px] text-muted-foreground">
 		Confidence: {Math.round(place.confidence * 100)}%
 	</div>
 </div>

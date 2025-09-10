@@ -53,7 +53,7 @@
 {/if}
 
 <div
-	class="top-0 z-50 hidden h-full max-h-screen w-96 overflow-y-auto rounded-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:sticky"
+	class="sticky top-0 z-50 hidden h-full max-h-screen w-96 overflow-y-auto rounded-lg bg-white/90 p-4 shadow-lg backdrop-blur-sm sm:flex"
 >
 	<PlacesFiltersBody {filters} {places} {limits} {pagination} />
 </div>
