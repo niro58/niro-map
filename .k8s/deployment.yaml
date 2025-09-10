@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: niro-map
-          image: ghcr.io/niro58/niro-map:7f57b782d6415ad8dcd872199c7389313e1838ba
+          image: ghcr.io/niro58/niro-map:74b33a6c735732119bfe723f9b38fa79576922e2
           ports:
             - containerPort: 80
           livenessProbe:
