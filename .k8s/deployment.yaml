@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: niro-map
-          image: ghcr.io/niro58/niro-map:13a577d2937a700d04e20c1166a832de24fe8902
+          image: ghcr.io/niro58/niro-map:94401827d8b42485fa66d9f284eeffbfa282add4
           ports:
             - containerPort: 80
           livenessProbe:
@@ -41,11 +41,11 @@ spec:
             failureThreshold: 3
           resources:
             requests:
-              cpu: 25m
-              memory: 250Mi
-            limits:
               cpu: 100m
-              memory: 450Mi
+              memory: 500Mi
+            limits:
+              cpu: 150m
+              memory: 750Mi
           envFrom:
             - configMapRef:
                 name: niro-map-config
