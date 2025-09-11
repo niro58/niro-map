@@ -20,7 +20,7 @@
 		},
 		{
 			label: 'About',
-			path: () => '/#about'
+			path: () => '/about'
 		}
 	] as const;
 </script>

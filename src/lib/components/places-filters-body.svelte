@@ -51,49 +51,53 @@
 </script>
 
 <div>
-	{#if places.type === 'LOADING' || places.type === 'NOT_ASKED'}
-		<div class="mb-4 rounded-lg bg-primary/10 p-4 text-center text-primary shadow-sm">
-			<div class="font-semibold">Loading places...</div>
-		</div>
-	{:else if places.type === 'FAILURE'}
-		<div class="mb-4 rounded-lg bg-destructive/10 p-4 text-center text-destructive shadow-sm">
-			<div class="font-semibold">Error loading places</div>
-			<div class="text-sm">{places.error}</div>
-		</div>
-	{:else if places.type === 'SUCCESS' && places.data.length === 0}
-		<div class="mb-4 rounded-lg bg-accent/10 p-4 text-center text-accent shadow-sm">
-			<div class="font-semibold">No places found</div>
-		</div>
-	{:else if places.type === 'SUCCESS' && places.data.length > 0}
-		<div class="bg-success/10 text-success mb-4 flex flex-col rounded-lg p-4 text-center shadow-sm">
-			<div class="font-semibold">{places.data.length} places found</div>
-			{#if pagination}
-				<div class="mt-2 flex flex-row items-center self-center">
-					<Button
-						size="icon"
-						disabled={!(filters.offset > 0)}
-						onclick={() => {
-							updateKey('offset', Math.max(0, (filters.offset || 0) - filters.limit));
-							window.scrollTo({ top: 0, behavior: 'smooth' });
-						}}
-					>
-						<ChevronLeft />
-					</Button>
-					<span class="px-4">Page {activePage}</span>
-					<Button
-						size="icon"
-						disabled={places.data.length < filters.limit}
-						onclick={() => {
-							updateKey('offset', (filters.offset || 0) + filters.limit);
-							window.scrollTo({ top: 0, behavior: 'smooth' });
-						}}
-					>
-						<ChevronLeft class="rotate-180" />
-					</Button>
-				</div>
-			{/if}
-		</div>
-	{/if}
+	<div class="sticky top-0 bg-white">
+		{#if places.type === 'LOADING' || places.type === 'NOT_ASKED'}
+			<div class="mb-4 rounded-lg bg-primary/10 p-4 text-center text-primary shadow-sm">
+				<div class="font-semibold">Loading places...</div>
+			</div>
+		{:else if places.type === 'FAILURE'}
+			<div class="mb-4 rounded-lg bg-destructive/10 p-4 text-center text-destructive shadow-sm">
+				<div class="font-semibold">Error loading places</div>
+				<div class="text-sm">{places.error}</div>
+			</div>
+		{:else if places.type === 'SUCCESS' && places.data.length === 0}
+			<div class="mb-4 rounded-lg bg-accent/10 p-4 text-center text-accent shadow-sm">
+				<div class="font-semibold">No places found</div>
+			</div>
+		{:else if places.type === 'SUCCESS' && places.data.length > 0}
+			<div
+				class="bg-success/10 text-success mb-4 flex flex-col rounded-lg p-4 text-center shadow-sm"
+			>
+				<div class="font-semibold">{places.data.length} places found</div>
+				{#if pagination}
+					<div class="mt-2 flex flex-row items-center self-center">
+						<Button
+							size="icon"
+							disabled={!(filters.offset > 0)}
+							onclick={() => {
+								updateKey('offset', Math.max(0, (filters.offset || 0) - filters.limit));
+								window.scrollTo({ top: 0, behavior: 'smooth' });
+							}}
+						>
+							<ChevronLeft />
+						</Button>
+						<span class="px-4">Page {activePage}</span>
+						<Button
+							size="icon"
+							disabled={places.data.length < filters.limit}
+							onclick={() => {
+								updateKey('offset', (filters.offset || 0) + filters.limit);
+								window.scrollTo({ top: 0, behavior: 'smooth' });
+							}}
+						>
+							<ChevronLeft class="rotate-180" />
+						</Button>
+					</div>
+				{/if}
+			</div>
+		{/if}
+	</div>
 	<Button
 		class="mb-4 w-full"
 		variant="outline"

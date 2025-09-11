@@ -25,7 +25,7 @@
 		const d = typeof s === 'string' ? new Date(s) : s;
 		return isNaN(d.getTime()) ? String(s) : d.toLocaleString();
 	}
-	const mapCenterWithOffset = [place.longitude, place.latitude - 0.07];
+	const mapCenterWithOffset = [place.longitude, place.latitude];
 </script>
 
 <Seo
