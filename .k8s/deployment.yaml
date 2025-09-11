@@ -41,11 +41,11 @@ spec:
             failureThreshold: 3
           resources:
             requests:
-              cpu: 25m
-              memory: 250Mi
-            limits:
               cpu: 100m
-              memory: 450Mi
+              memory: 500Mi
+            limits:
+              cpu: 150m
+              memory: 750Mi
           envFrom:
             - configMapRef:
                 name: niro-map-config
