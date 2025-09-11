@@ -2,16 +2,15 @@ import dotenv
 import psycopg2
 import os 
 
-lastMod = "2025-09-10"
+lastMod = "2025-09-11"
 
-sitemaps = []
-
-
+pageIndex = 1
 
 def main():
-    maxOffset=1_500_000
-    maxPerSitemap = 50_000
-    page="https://www.niromap.com/places/%s"
+    global pageIndex
+    maxOffset=11_500_000
+    maxPerSitemap = 40_000
+    pageLink="https://www.niromap.com/places/%s"
     offset = 0
 
     while offset < maxOffset:
@@ -21,26 +20,16 @@ def main():
 
         pages = []
         for row in cursor.fetchall():
-            placeId = row[0]
-            pages.append(page % placeId)
-
+            try:
+                placeId = row[0]
+                pages.append(pageLink % str(placeId))
+            except Exception as e:
+                print(f"Error processing row {row}: {e}")
         
         print(f"  Found {len(pages)} pages")
-        sitemaps.append(pages)
         offset += maxPerSitemap
-    
-    with open("static/sitemap.xml", "w") as f:
-        f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        f.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-        for i in range(len(sitemaps)):
-            f.write("  <sitemap>\n")
-            f.write(f"    <loc>https://www.niromap.com/sitemap-{i+1}.xml</loc>\n")
-            f.write(f"    <lastmod>{lastMod}</lastmod>\n")
-            f.write("  </sitemap>\n")
-        f.write("</sitemapindex>\n")
 
-    for i, pages in enumerate(sitemaps):
-        with open(f"static/sitemap-{i+1}.xml", "w") as f:
+        with open(f"static/sitemaps/sitemap-{pageIndex}.xml", "w") as f:
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
             for page in pages:
@@ -49,6 +38,18 @@ def main():
                 f.write(f"    <lastmod>{lastMod}</lastmod>\n")
                 f.write("  </url>\n")
             f.write("</urlset>\n")
+        pageIndex += 1
+
+    with open("static/sitemap.xml", "w") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        f.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        for i in range(pageIndex):
+            f.write("  <sitemap>\n")
+            f.write(f"    <loc>https://www.niromap.com/sitemap-{i+1}.xml</loc>\n")
+            f.write(f"    <lastmod>{lastMod}</lastmod>\n")
+            f.write("  </sitemap>\n")
+        f.write("</sitemapindex>\n")
+
     pass
 
 
