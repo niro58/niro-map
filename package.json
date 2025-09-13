@@ -50,7 +50,7 @@
 		]
 	},
 	"dependencies": {
-		"@arenarium/maps": "^1.0.211",
+		"@arenarium/maps": "^1.0.213",
 		"maplibre-gl": "^5.7.1",
 		"pg": "^8.16.3",
 		"postgres": "^3.4.7",

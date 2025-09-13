@@ -21,7 +21,6 @@
 
 	const {
 		places,
-		endpoint,
 		class: className,
 		initialZoom = 5,
 		center,
@@ -31,7 +30,6 @@
 		actionButtons = true
 	}: {
 		places: ResultClient<PlaceResponse[]>;
-		endpoint?: string;
 		class?: string;
 		initialZoom?: number;
 		center?: [number, number];
@@ -56,13 +54,7 @@
 			center: center || [10.4515, 51.1657],
 			zoom: initialZoom
 		});
-		mapManager = new MapManager(env.PUBLIC_MAP_API_KEY, mapProvider, {
-			api: endpoint
-				? {
-						states: { url: endpoint }
-					}
-				: undefined
-		});
+		mapManager = new MapManager(env.PUBLIC_MAP_API_KEY, mapProvider);
 
 		map = mapProvider.getMap();
 		map.on('click', onMapClick);

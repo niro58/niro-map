@@ -24,7 +24,7 @@ const config = {
 					'https://plausible.io',
 					'https://*.plausible.io',
 					'https://tiles.openfreemap.org',
-					'https://maps.api.arenarium.dev'
+					'https://maps.api.arenarium.dev',
 				],
 				'object-src': ['none']
 			}

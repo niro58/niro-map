@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@arenarium/maps':
-        specifier: ^1.0.211
-        version: 1.0.211(maplibre-gl@5.7.1)
+        specifier: ^1.0.213
+        version: 1.0.213(maplibre-gl@5.7.1)
       maplibre-gl:
         specifier: ^5.7.1
         version: 5.7.1
@@ -114,8 +114,8 @@ importers:
 
 packages:
 
-  '@arenarium/maps@1.0.211':
-    resolution: {integrity: sha512-SErN5gDZdRdOiZO9fj/8bSn2WuUWIrD71EJd7UTiTZzz5OSRdzBX5sRN/5URZC2G1YV8E73Pw2cmOmTChoW7ew==}
+  '@arenarium/maps@1.0.213':
+    resolution: {integrity: sha512-jT1xjPlJvF+lii8BUa65fxEbCTmwcMs6jix6bnjifyJgWln8MCRWvPCKcVSPM1i3BLIiLTua/btBFpkJNAY2XA==}
     peerDependencies:
       '@googlemaps/js-api-loader': ^1.16.10
       '@types/google.maps': ^3.58.1
@@ -1805,7 +1805,7 @@ packages:
 
 snapshots:
 
-  '@arenarium/maps@1.0.211(maplibre-gl@5.7.1)':
+  '@arenarium/maps@1.0.213(maplibre-gl@5.7.1)':
     dependencies:
       zod: 3.25.76
     optionalDependencies:

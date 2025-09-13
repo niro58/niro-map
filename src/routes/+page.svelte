@@ -60,7 +60,6 @@
 		{#snippet children({ updateKey })}
 			<Map
 				{places}
-				endpoint={`${env.PUBLIC_API_ENDPOINT}/api/states`}
 				toAverageCenter={data.filters.country.length > 0}
 				onPinPlaced={(radius, point) => {
 					if (!radius || !point) {
