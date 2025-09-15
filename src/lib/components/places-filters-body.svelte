@@ -19,6 +19,7 @@
 	import { triggerFilter } from '$lib/filters';
 	import type { Snippet } from 'svelte';
 	import { Check, ChevronLeft, Filter, Menu, X } from '@lucide/svelte';
+	import { appPages } from '$lib/config/pages';
 
 	const {
 		filters: initialFilters,
@@ -50,7 +51,7 @@
 	const activePage = $derived(Math.floor(filters.offset / filters.limit) + 1 || 1);
 </script>
 
-<div>
+<div class="w-full">
 	<div class="sticky top-0 bg-white">
 		{#if places.type === 'LOADING' || places.type === 'NOT_ASKED'}
 			<div class="mb-4 rounded-lg bg-primary/10 p-4 text-center text-primary shadow-sm">
@@ -247,4 +248,7 @@
 			</Accordion.Item>
 		{/each}
 	</Accordion.Root>
+	<div class="flex items-center justify-center py-2">
+		<a href={appPages.terms.path()} class="underline"> Terms </a>
+	</div>
 </div>

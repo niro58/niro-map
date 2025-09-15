@@ -2,11 +2,17 @@
 	import '../app.css';
 
 	import Nav from '$lib/components/nav.svelte';
-	let { children } = $props();
+	import Footer from '$lib/components/footer.svelte';
+	let { children, data } = $props();
 </script>
 
-<div class="flex h-screen flex-col">
+<div class="flex min-h-screen flex-col">
 	<Nav />
 
-	{@render children?.()}
+	<div class="flex min-h-0 flex-1 flex-col">
+		{@render children?.()}
+	</div>
+	{#if !data.page.withoutFooter}
+		<Footer />
+	{/if}
 </div>

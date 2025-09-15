@@ -82,7 +82,7 @@
 								<Popup {place} class="h-full" />
 							</div>
 						{/each}
-						<div class="col-span-3 mt-12 flex flex-row items-center justify-center gap-4">
+						<div class="col-span-3 mt-12 mb-12 flex flex-row items-center justify-center gap-4">
 							<Button
 								disabled={!(data.filters.offset > 0)}
 								onclick={() => {

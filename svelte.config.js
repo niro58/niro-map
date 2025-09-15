@@ -8,6 +8,11 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
+		alias: {
+			$config: './src/config',
+			$modules: './src/lib/modules',
+			$ui: './src/lib/components/ui'
+		},
 		adapter: adapter({
 			out: 'build'
 		}),
@@ -15,7 +20,7 @@ const config = {
 			mode: 'auto',
 			directives: {
 				'default-src': ['self'],
-                'script-src': ['self', 'https://plausible.io', 'https://*.plausible.io', 'blob:'],
+				'script-src': ['self', 'https://plausible.io', 'https://*.plausible.io', 'blob:'],
 				'style-src': ['self', 'unsafe-inline'],
 				'img-src': ['self', 'data:'],
 				'font-src': ['self'],
@@ -24,7 +29,7 @@ const config = {
 					'https://plausible.io',
 					'https://*.plausible.io',
 					'https://tiles.openfreemap.org',
-					'https://maps.api.arenarium.dev',
+					'https://maps.api.arenarium.dev'
 				],
 				'object-src': ['none']
 			}
