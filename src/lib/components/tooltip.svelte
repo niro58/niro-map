@@ -6,12 +6,14 @@
 		place: PlaceResponse;
 		width: number;
 		height: number;
+		isHighlighted?: boolean;
 	};
-	let { place, width, height }: Props = $props();
+	let { place, width, height, isHighlighted }: Props = $props();
 </script>
 
 <div
-	class="flex flex-col justify-center rounded-md bg-card px-2 font-sans text-card-foreground shadow-md"
+	class={'flex flex-col justify-center rounded-md bg-card px-2 font-sans text-card-foreground shadow-md' +
+		(isHighlighted ? 'border-2 border-primary' : '')}
 	style="width:{width}px; height:{height}px; font-size:11px;"
 >
 	<!-- Name and Category -->

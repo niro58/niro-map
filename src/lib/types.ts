@@ -23,8 +23,11 @@ export type PlaceResponse = {
     }[]
     latitude: number;
     longitude: number;
+    pinVariant?: PinVariant;
+    tooltipVariant?: TooltipVariant;
 }
-
+export type PinVariant = "default" | "primary" | "secondary";
+export type TooltipVariant = 'default' | 'primary' | 'secondary';
 export type GetPlaceRequest = {
     fid: string;
 }
@@ -64,6 +67,20 @@ export const getPlacesFilters = {
     },
     radius: {
         type: "number"
+    },
+    name: {
+        type: "string"
+    },
+    notName: {
+        type: "string"
+    },
+    orderBy: {
+        type: "string",
+        default: "confidence"
+    },
+    orderDir: {
+        type: "string",
+        default: "desc"
     }
 } as const satisfies Record<string, ExtractParamValueDefinition>;
 export type GetPlacesFilters = ExtractedParams<typeof getPlacesFilters>;

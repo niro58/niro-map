@@ -1,6 +1,6 @@
 import { env } from "$env/dynamic/public";
-import { getFilterSearchParams } from "./filters";
-import type { GetPlacesFilters, PlaceResponse } from "./types";
+import { extractParams, getFilterSearchParams } from "./filters";
+import { getPlacesFilters, type GetPlacesFilters, type PlaceResponse } from "./types";
 import type { ResultFetch } from "./utils";
 
 // search params are GetPlacesFilters
@@ -23,4 +23,7 @@ export async function getMapPlaces(filters: GetPlacesFilters): Promise<ResultFet
         return { type: "FAILURE", error: `Error fetching places: ${error}` };
     }
 }
-
+export async function getMapPlacesPartial(filters: Partial<GetPlacesFilters>): Promise<ResultFetch<PlaceResponse[]>> {
+    const fullFilters: GetPlacesFilters = extractParams(new URLSearchParams(), getPlacesFilters);
+    return getMapPlaces({ ...fullFilters, ...filters });
+}

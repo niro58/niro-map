@@ -36,6 +36,8 @@ type ParamValueType<T extends ExtractParamValueDefinition> = T extends { type: '
 	? string
 	: T extends { type: 'number' }
 	? number
+	: T extends { type: 'float' }
+	? number
 	: T extends { type: 'boolean' }
 	? boolean
 	: T extends { type: 'date' }

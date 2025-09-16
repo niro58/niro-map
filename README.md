@@ -48,3 +48,4 @@ This is a personal project done for fun. If you'd like me to focus more time on 
       flush @ batch.js:381
       (anonymous) @ batch.js:460
       dequeue @ batch.js:69
+- [ ] check in overture maps data why there are no brand names

@@ -35,6 +35,17 @@ export async function GET(event) {
     let idx = 1;
     const where: string[] = [];
 
+    if (urlParams.name) {
+        values.push(`%${urlParams.name.toLowerCase()}%`);
+        where.push(`LOWER("names.primary") LIKE $${idx}`);
+        idx++;
+    }
+    if( urlParams.notName ) {
+        values.push(`%${urlParams.notName.toLowerCase()}%`);
+        where.push(`LOWER("names.primary") NOT LIKE $${idx}`);
+        idx++;
+    }
+
     // countries: addresses is jsonb array of objects -> country
     if (urlParams.country && urlParams.country.length > 0) {
         values.push(urlParams.country);
@@ -87,6 +98,7 @@ export async function GET(event) {
     }
 
 
+
     const sql = `
         SELECT
             ogc_fid,
@@ -107,7 +119,7 @@ export async function GET(event) {
             ST_X(geometry::geometry) AS longitude
         FROM public.places
         ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
-        ORDER BY confidence desc
+        ORDER BY ${urlParams.orderBy} ${urlParams.orderDir.toUpperCase() === 'ASC' ? 'ASC' : 'DESC'}
         ${urlParams.limit ? `LIMIT $${limitParamIndex}` : ''}
         ${urlParams.offset ? `OFFSET $${offsetParamIndex}` : ''}
     `;

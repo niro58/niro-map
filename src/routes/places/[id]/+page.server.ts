@@ -1,5 +1,7 @@
+import { getClosestPlaces, getMapPlaces } from "$lib/api.js";
+import { extractParams } from "$lib/filters";
 import { db } from "$lib/server/db";
-import type { PlaceResponse } from "$lib/types.js";
+import { getPlacesFilters, type PlaceResponse } from "$lib/types.js";
 
 export async function load({ params }) {
     if (!db) {
@@ -21,7 +23,12 @@ export async function load({ params }) {
     )
 
     const rows = result.rows
+    const place = rows[0] as PlaceResponse || null
+    if (!place) {
+        throw new Error("Place not found");
+    }
+
     return {
-        place: rows[0] as unknown as PlaceResponse || null
+        place: place,
     }
 }

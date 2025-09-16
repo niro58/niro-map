@@ -1,10 +1,16 @@
 <script lang="ts">
 	import Map from '$lib/components/map.svelte';
+	import PlaceMap from '$lib/components/place-map.svelte';
+	import PlaceRelatedPlaces from '$lib/components/place-related-places.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Seo from '$lib/components/ui/seo/seo.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import { cleanCategory, cleanWebsite, googleMapsLink } from '$lib/utils.js';
+	import { extractParams } from '$lib/filters.js';
+	import { getPlacesFilters, type PlaceResponse } from '$lib/types.js';
+	import { cleanCategory, cleanWebsite, googleMapsLink, type ResultClient } from '$lib/utils.js';
+	import Checkbox from '$ui/checkbox/checkbox.svelte';
+	import Label from '$ui/label/label.svelte';
 	import {
 		MapPin,
 		Globe,
@@ -13,19 +19,19 @@
 		Building,
 		Info,
 		ChevronDown,
-		Database
+		Database,
+		Loader,
+		Loader2
 	} from '@lucide/svelte';
 
 	const { data } = $props();
-
-	const place = data.place;
+	const place: PlaceResponse = data.place;
 
 	function formatDate(s: string | Date | undefined) {
 		if (!s) return '';
 		const d = typeof s === 'string' ? new Date(s) : s;
 		return isNaN(d.getTime()) ? String(s) : d.toLocaleString();
 	}
-	const mapCenterWithOffset = [place.longitude, place.latitude];
 </script>
 
 <Seo
@@ -71,18 +77,20 @@
 			</div>
 
 			<!-- Coordinates & Map Link -->
-			<div class="flex-shrink-0 text-left md:text-right">
+			<div class="flex h-full flex-col justify-between text-left md:text-right">
 				{#if place.latitude != null && place.longitude != null}
-					<div class="text-sm font-medium text-muted-foreground">Coordinates</div>
-					<a
-						class="font-mono text-lg font-medium text-primary hover:underline"
-						href={googleMapsLink(place.latitude, place.longitude)}
-						target="_blank"
-						rel="noopener"
-					>
-						{place.latitude.toFixed(6)}, {place.longitude.toFixed(6)}
-					</a>
-					<div class="mt-3">
+					<div>
+						<div class="text-sm font-medium text-muted-foreground">Coordinates</div>
+						<a
+							class="font-mono text-lg font-medium text-primary hover:underline"
+							href={googleMapsLink(place.latitude, place.longitude)}
+							target="_blank"
+							rel="noopener"
+						>
+							{place.latitude.toFixed(6)}, {place.longitude.toFixed(6)}
+						</a>
+					</div>
+					<div>
 						<Button
 							href={googleMapsLink(place.latitude, place.longitude)}
 							target="_blank"
@@ -162,7 +170,6 @@
 					</div>
 				</div>
 			</section>
-
 			<!-- Brand & Source Card -->
 			<section class="rounded-lg bg-card p-6 shadow-sm">
 				<h2 class="text-xl font-semibold text-foreground">Details</h2>
@@ -202,42 +209,11 @@
 		</div>
 
 		<!-- Right Column -->
-		<div class="col-span-1 lg:col-span-3">
-			<section class="rounded-lg bg-card p-6 shadow-sm">
-				<h2 class="text-xl font-semibold text-foreground">Location</h2>
-				<!-- Addresses -->
-				<div class="mt-4 space-y-4">
-					{#if place.addresses && place.addresses.length > 0}
-						{#each place.addresses as addr, i}
-							<div class="rounded-md border border-border p-4">
-								<p class="font-semibold text-foreground">
-									{addr.freeform ?? 'Address ' + (i + 1)}
-								</p>
-								<p class="text-sm text-muted-foreground">
-									{[addr.locality, addr.region, addr.country, addr.postcode]
-										.filter(Boolean)
-										.join(', ')}
-								</p>
-							</div>
-						{/each}
-					{:else}
-						<p class="text-sm text-muted-foreground">No address data available.</p>
-					{/if}
-				</div>
-				<!-- Map -->
-				<div
-					class="mt-6 aspect-video h-auto w-full overflow-hidden rounded-md border border-border"
-				>
-					<Map
-						actionButtons={false}
-						places={{ type: 'SUCCESS', data: [place] }}
-						initialZoom={10}
-						center={mapCenterWithOffset as [number, number]}
-					/>
-				</div>
-			</section>
+		<div class="col-span-1 h-full lg:col-span-3">
+			<PlaceMap {place} />
 		</div>
 	</main>
+	<PlaceRelatedPlaces {place} />
 
 	<!-- Developer Info Section -->
 	<footer class="mx-auto max-w-4xl">

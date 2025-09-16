@@ -52,7 +52,7 @@
 		]
 	},
 	"dependencies": {
-		"@arenarium/maps": "^1.0.213",
+		"@arenarium/maps": "^1.0.211",
 		"@tailwindcss/typography": "^0.5.16",
 		"maplibre-gl": "^5.7.1",
 		"pg": "^8.16.3",

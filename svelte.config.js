@@ -21,9 +21,14 @@ const config = {
 			directives: {
 				'default-src': ['self'],
 				'script-src': ['self', 'https://plausible.io', 'https://*.plausible.io', 'blob:'],
-				'style-src': ['self', 'unsafe-inline'],
-				'img-src': ['self', 'data:'],
-				'font-src': ['self'],
+				'style-src': [
+					'self',
+					'unsafe-inline',
+					'https://fonts.googleapis.com',
+					'https://storage.ko-fi.com'
+				],
+				'img-src': ['self', 'data:', 'https://storage.ko-fi.com'],
+				'font-src': ['self', 'https://fonts.gstatic.com'],
 				'connect-src': [
 					'self',
 					'https://plausible.io',
@@ -31,7 +36,8 @@ const config = {
 					'https://tiles.openfreemap.org',
 					'https://maps.api.arenarium.dev'
 				],
-				'object-src': ['none']
+				'object-src': ['none'],
+				'frame-src': ['self', 'https://ko-fi.com']
 			}
 		}
 	}

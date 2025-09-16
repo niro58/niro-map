@@ -88,7 +88,6 @@
 					size="icon"
 					onclick={() => {
 						$isFilterOpen = !$isFilterOpen;
-						console.log($isFilterOpen);
 						isOpen = false;
 					}}
 					aria-label={$isFilterOpen ? 'Close filter' : 'Open filter'}

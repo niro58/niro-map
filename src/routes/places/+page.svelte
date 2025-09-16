@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getMapPlaces } from '$lib/api.js';
+	import PlaceItemLoading from '$lib/components/place/place-item-loading.svelte';
 	import PlacesFilters from '$lib/components/places-filters.svelte';
 	import Popup from '$lib/components/popup.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';

@@ -4,9 +4,9 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import Seo from '$lib/components/ui/seo/seo.svelte';
+	import { Github } from '@lucide/svelte';
 
 	const githubUrl = 'https://github.com/niro58/niro-map';
-	const buyMeACoffeeUrl = 'https://buymeacoffee.com/nirodev01n';
 </script>
 
 <Seo
@@ -82,15 +82,10 @@
 
 		<Card.Footer class="flex flex-col gap-3">
 			<div class="flex gap-2">
-				<Button href={buyMeACoffeeUrl} target="_blank" rel="noopener">Buy me a coffee</Button>
-				<Button variant="outline" href={githubUrl} target="_blank" rel="noopener"
-					>View on GitHub</Button
+				<Button variant="outline" size="lg" href={githubUrl} target="_blank" rel="noopener">
+					<Github />
+					View on GitHub</Button
 				>
-			</div>
-
-			<div class="text-xs text-muted-foreground">
-				If you'd like me to focus more time on this project, supporting it (even a small amount)
-				helps prioritize features, data improvements and maintenance.
 			</div>
 		</Card.Footer>
 	</Card.Root>

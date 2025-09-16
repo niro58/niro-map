@@ -27,7 +27,8 @@
 		toAverageCenter = true,
 		onPinPlaced,
 		defaultPlacedPin,
-		actionButtons = true
+		actionButtons = true,
+		highlightIds
 	}: {
 		places: ResultClient<PlaceResponse[]>;
 		class?: string;
@@ -40,10 +41,12 @@
 		) => void;
 		defaultPlacedPin?: { radius: number; point: { lat: number; lon: number } };
 		actionButtons?: boolean;
+		highlightIds?: string[];
 	} = $props();
 
 	let mapManager: MapManager;
 	let map: maplibregl.Map | undefined = $state();
+	let mapLoaded = $state(false);
 	let mapContainer: HTMLDivElement;
 	let isUpdatingMarkers: ResultClient<undefined> = $state({ type: 'NOT_ASKED' });
 
@@ -54,20 +57,35 @@
 			center: center || [10.4515, 51.1657],
 			zoom: initialZoom
 		});
-		mapManager = new MapManager(env.PUBLIC_MAP_API_KEY, mapProvider);
+		mapManager = new MapManager('', mapProvider, {
+			api: {
+				states: {
+					url: `${env.PUBLIC_API_ENDPOINT}/api/states`
+				}
+			}
+		});
 
 		map = mapProvider.getMap();
 		map.on('click', onMapClick);
 		map.on('style.load', () => {
-			if (defaultPlacedPin && defaultPlacedPin.point) {
-				pinLocation = defaultPlacedPin.point;
-				pinRadiusKm = defaultPlacedPin.radius;
-				updateRadiusCircle(pinLocation, pinRadiusKm);
-			}
+			mapLoaded = true;
 		});
 	});
 	$effect(() => {
 		update();
+	});
+	$effect(() => {
+		if (mapLoaded && defaultPlacedPin && defaultPlacedPin.point) {
+			untrack(() => {
+				pinLocation = defaultPlacedPin.point;
+				pinRadiusKm = defaultPlacedPin.radius;
+				updateRadiusCircle(pinLocation, pinRadiusKm);
+			});
+		} else if (mapLoaded && !defaultPlacedPin) {
+			pinLocation = null;
+			pinRadiusKm = 10;
+			removeRadiusCircle();
+		}
 	});
 
 	async function averageCenter() {
@@ -91,13 +109,22 @@
 		isUpdatingMarkers = { type: 'LOADING' };
 		const markers = new Array<MapMarker>();
 
+		if (highlightIds) {
+			places.data = places.data.sort((a, b) => {
+				const aHighlighted = highlightIds.includes(a.id) ? 1 : 0;
+				const bHighlighted = highlightIds.includes(b.id) ? 1 : 0;
+				if (aHighlighted === bHighlighted) return 0;
+				return aHighlighted > bHighlighted ? -1 : 1;
+			});
+		}
+
 		// let cnt = 0;
 		for (let i = 0; i < places.data.length; i++) {
 			const place = places.data[i];
 			const rank = places.data.length - i;
 			const lat = place.latitude;
 			const lng = place.longitude;
-
+			const isHighlighted = highlightIds?.includes(place.id);
 			if (!lat || !lng) continue;
 			// if (cnt++ >= LIMIT) break;
 			markers.push({
@@ -112,7 +139,7 @@
 						margin: 8,
 						radius: 12
 					},
-					body: () => getTooltipBody(place)
+					body: () => getTooltipBody(place, isHighlighted || false)
 				},
 				pin: {
 					style: {
@@ -153,13 +180,17 @@
 		}
 	}
 
-	async function getTooltipBody(place: PlaceResponse): Promise<HTMLElement> {
+	async function getTooltipBody(
+		place: PlaceResponse,
+		isHighlighted: boolean
+	): Promise<HTMLElement> {
 		const element = document.createElement('div');
 		element.addEventListener('click', (e) => onTooltipClick(e, place.id));
 		mount(Tooltip, {
 			target: element,
 			props: {
 				place,
+				isHighlighted,
 				width: 120,
 				height: 90
 			}
