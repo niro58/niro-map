@@ -1,7 +1,5 @@
-import { getClosestPlaces, getMapPlaces } from "$lib/api.js";
-import { extractParams } from "$lib/filters";
 import { db } from "$lib/server/db";
-import { getPlacesFilters, type PlaceResponse } from "$lib/types.js";
+import { type PlaceResponse } from "$lib/types.js";
 
 export async function load({ params }) {
     if (!db) {
