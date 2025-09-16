@@ -68,9 +68,11 @@
 	>
 		{#snippet children({ updateKey })}
 			<div class="container flex w-full justify-center">
-				<div class="mt-12 grid w-full grid-cols-1 justify-center gap-2 md:grid-cols-3">
+				<div
+					class="mt-12 grid w-full grid-cols-1 justify-center gap-2 md:grid-cols-1 xl:grid-cols-3"
+				>
 					{#if places.type === 'SUCCESS' && places.data.length === 0}
-						<div class="col-span-3 mt-12 flex flex-col items-center justify-start gap-4">
+						<div class="mt-12 flex flex-col items-center justify-start gap-4">
 							<h2 class="text-2xl font-bold">No places found</h2>
 							<p class="text-center text-muted-foreground">
 								Try adjusting your filters or search area to find more places.
@@ -82,7 +84,7 @@
 								<Popup {place} class="h-full" />
 							</div>
 						{/each}
-						<div class="col-span-3 mt-12 mb-12 flex flex-row items-center justify-center gap-4">
+						<div class="mt-12 mb-12 flex flex-row items-center justify-center gap-4">
 							<Button
 								disabled={!(data.filters.offset > 0)}
 								onclick={() => {
@@ -110,9 +112,7 @@
 							<Skeleton class="mb-4 h-96 w-full rounded-lg" />
 						{/each}
 					{:else if places.type === 'FAILURE'}
-						<div
-							class="col-span-3 mt-12 flex flex-col items-center justify-start gap-4 text-red-400"
-						>
+						<div class="mt-12 flex flex-col items-center justify-start gap-4 text-red-400">
 							<h2 class="text-2xl font-bold">Error loading places</h2>
 							<p class="text-center text-muted-foreground">
 								An error occurred while fetching places: {places.error}

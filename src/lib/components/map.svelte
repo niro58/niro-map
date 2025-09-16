@@ -341,7 +341,7 @@
 	}
 </script>
 
-<div class="relative h-full w-full">
+<div class="relative w-full flex-1">
 	{#if isUpdatingMarkers.type === 'LOADING'}
 		<div class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 transform">
 			<Button variant="outline" size="sm" class="animate-pulse">Updating markers...</Button>

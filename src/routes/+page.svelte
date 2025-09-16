@@ -55,7 +55,7 @@
 	keywords="interactive map, Overture maps, points of interest, POI explorer, data visualization, world map, place finder, PostGIS, maplibre, Svelte"
 />
 
-<div class="flex min-h-0 flex-1">
+<div class="flex h-screen flex-1">
 	<PlacesFilters filters={data.filters} {places}>
 		{#snippet children({ updateKey })}
 			<Map
