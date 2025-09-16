@@ -5,6 +5,7 @@
 	import Popup from '$lib/components/popup.svelte';
 	import Skeleton from '$ui/skeleton/skeleton.svelte';
 	import { ChevronLeft, ChevronRight } from '@lucide/svelte';
+	import { onMount } from 'svelte';
 
 	const { place }: { place: PlaceResponse } = $props();
 	let relatedPlacesResult: ResultClient<PlaceResponse[]> = $state({ type: 'NOT_ASKED' });
@@ -46,7 +47,9 @@
 				relatedPlacesResult = { type: 'FAILURE', error: err?.message ?? 'Unknown error' };
 			});
 	}
-	getRelatedPlaces();
+	onMount(() => {
+		getRelatedPlaces();
+	});
 </script>
 
 <section class="mt-12 w-full">

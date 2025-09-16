@@ -177,8 +177,10 @@
 .floatingchat-container-wrap {
 	left: unset !important;
 	right: 16px !important;
+	z-index: 100000000 !important;
 }
 .floating-chat-kofi-popup-iframe {
 	left: unset !important;
 	right: 16px !important;
+	z-index: 100000000 !important;
 }

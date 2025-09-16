@@ -16,6 +16,7 @@
 	let franchisePlaces: ResultClient<PlaceResponse[]> = $state({ type: 'NOT_ASKED' });
 	let closestPlacesResult: ResultClient<PlaceResponse[]> = $state({ type: 'NOT_ASKED' });
 	let activePlaces: ('place' | 'franchise' | 'closest')[] = $state(['place']);
+	const CLOSEST_PLACES_RADIUS_KM = 10;
 	const places = $derived.by(() => {
 		let pl: PlaceResponse[] = [];
 
@@ -70,7 +71,7 @@
 		getMapPlacesPartial({
 			latitude: place.latitude,
 			longitude: place.longitude,
-			radius: 10
+			radius: CLOSEST_PLACES_RADIUS_KM
 		})
 			.then((res) => {
 				if (res.type === 'FAILURE') {
@@ -105,7 +106,7 @@
 		},
 		{
 			label: 'closest',
-			name: 'Closest Places',
+			name: `Closest Places (within ${CLOSEST_PLACES_RADIUS_KM} km)`,
 			isLoading: () => closestPlacesResult.type === 'LOADING',
 			count: () => (closestPlacesResult.type === 'SUCCESS' ? closestPlacesResult.data.length : 0),
 			onclick: getClosestPlaces
@@ -180,7 +181,7 @@
 			center={mapCenterWithOffset as [number, number]}
 			defaultPlacedPin={activePlaces.includes('closest')
 				? {
-						radius: 10,
+						radius: CLOSEST_PLACES_RADIUS_KM,
 						point: { lat: place.latitude, lon: place.longitude }
 					}
 				: undefined}

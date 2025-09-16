@@ -226,6 +226,7 @@
 	}
 
 	let isPlacingPin = $state(false);
+	let pinPlacementLocked = $state(false); // New state to lock pin placement after search
 	let pinLocation: { lat: number; lon: number } | null = $state(null);
 	let pinRadiusKm = $state(10);
 
@@ -236,6 +237,7 @@
 	});
 
 	function togglePinPlacement() {
+		if (pinPlacementLocked) return; // Prevent toggling if locked
 		isPlacingPin = !isPlacingPin;
 
 		if (!isPlacingPin) {
@@ -252,7 +254,16 @@
 	function handleSearch() {
 		if (!pinLocation) return;
 		onPinPlaced?.(pinRadiusKm, pinLocation);
-		togglePinPlacement();
+		pinPlacementLocked = true;
+		isPlacingPin = false;
+		if (map) map.getCanvas().style.cursor = '';
+	}
+
+	function handleSelectPlace() {
+		pinLocation = null;
+		pinPlacementLocked = false;
+		isPlacingPin = true;
+		if (map) map.getCanvas().style.cursor = 'crosshair';
 	}
 
 	function createGeoJSONCircle(
@@ -331,7 +342,7 @@
 	}
 
 	function onMapClick(e: maplibregl.MapMouseEvent & { lngLat: maplibregl.LngLat }) {
-		if (isPlacingPin) {
+		if (isPlacingPin && !pinPlacementLocked) {
 			pinLocation = { lat: e.lngLat.lat, lon: e.lngLat.lng };
 			isPlacingPin = false;
 			if (map) map.getCanvas().style.cursor = '';
@@ -343,21 +354,25 @@
 
 <div class="relative w-full flex-1">
 	{#if isUpdatingMarkers.type === 'LOADING'}
-		<div class="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 transform">
-			<Button variant="outline" size="sm" class="animate-pulse">Updating markers...</Button>
+		<div
+			class="pointer-events-none absolute inset-0 z-[99999999] mt-8 flex items-start justify-center"
+		>
+			<Button variant="outline" size="sm" class="pointer-events-auto animate-pulse"
+				>Updating markers...</Button
+			>
 		</div>
 	{/if}
 	{#if actionButtons}
 		<div
-			class="fixed bottom-4 left-4 z-[99999999] flex h-fit flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:left-16"
+			class="fixed bottom-20 left-4 z-[99999999] flex h-fit flex-col gap-2 rounded-lg bg-white p-2 shadow-lg sm:absolute sm:top-4 sm:left-16"
 		>
 			<Button onclick={togglePinPlacement} variant="outline">
 				{#if isPlacingPin}
 					<X class="mr-2 h-4 w-4" />
-					Cancel
+					Close
 				{:else}
 					<LocateFixed class="mr-2 h-4 w-4" />
-					Place Pin
+					Select Place
 				{/if}
 			</Button>
 			{#if pinLocation}
@@ -371,12 +386,37 @@
 						min={0.5}
 						max={1000}
 						step={2}
-						bind:value={pinRadiusKm}
+						bind:value={
+							() => pinRadiusKm,
+							(v) => {
+								pinRadiusKm = v;
+								if (pinPlacementLocked) {
+									pinPlacementLocked = false;
+								}
+							}
+						}
 						class="w-full"
 					/>
-					<Input bind:value={pinRadiusKm} />
+					<Input
+						bind:value={
+							() => pinRadiusKm,
+							(v) => {
+								pinRadiusKm = v;
+								if (pinPlacementLocked) {
+									pinPlacementLocked = false;
+								}
+							}
+						}
+					/>
 
-					<Button onclick={handleSearch} size="sm">Search Area</Button>
+					<Button
+						onclick={handleSearch}
+						size="sm"
+						class="mt-2 w-full"
+						disabled={pinPlacementLocked}
+					>
+						Search Area
+					</Button>
 				</div>
 			{:else if isPlacingPin}
 				<div class="mt-2 text-sm text-muted-foreground">Click on any point on the map</div>
