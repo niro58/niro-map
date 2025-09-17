@@ -375,6 +375,24 @@
 					Select Place
 				{/if}
 			</Button>
+			{#if isPlacingPin}
+				<Button
+					onclick={() => {
+						navigator.geolocation.getCurrentPosition((position) => {
+							pinLocation = {
+								lat: position.coords.latitude,
+								lon: position.coords.longitude
+							};
+							isPlacingPin = false;
+							if (map) {
+								map.getCanvas().style.cursor = '';
+								map.setCenter([position.coords.longitude, position.coords.latitude]);
+								map.setZoom(10);
+							}
+						});
+					}}>Use My Location</Button
+				>
+			{/if}
 			{#if pinLocation}
 				<div class="flex w-64 flex-col gap-2 border-t pt-2">
 					<Label for="radius" class="text-sm font-medium">Radius: {pinRadiusKm.toFixed(1)} km</Label
