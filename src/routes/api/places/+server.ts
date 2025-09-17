@@ -36,11 +36,11 @@ export async function GET(event) {
     const where: string[] = [];
 
     if (urlParams.name) {
-        values.push(`%${urlParams.name.toLowerCase()}%`);
-        where.push(`LOWER("names.primary") LIKE $${idx}`);
+        values.push(urlParams.name.toLowerCase());
+        where.push(`LOWER("names.primary") = $${idx}`);
         idx++;
     }
-    if( urlParams.notName ) {
+    if (urlParams.notName) {
         values.push(`%${urlParams.notName.toLowerCase()}%`);
         where.push(`LOWER("names.primary") NOT LIKE $${idx}`);
         idx++;
@@ -96,7 +96,6 @@ export async function GET(event) {
     if (urlParams.offset) {
         values.push(urlParams.offset);
     }
-
 
 
     const sql = `

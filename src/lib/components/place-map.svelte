@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
-	import { getMapPlaces, getMapPlacesPartial } from '$lib/api.js';
+	import { getMapPlacesPartial } from '$lib/api.js';
 	import Map from '$lib/components/map.svelte';
 
-	import { extractParams } from '$lib/filters.js';
-	import { getPlacesFilters, type GetPlacesFilters, type PlaceResponse } from '$lib/types.js';
+	import { type PlaceResponse } from '$lib/types.js';
 	import { type ResultClient } from '$lib/utils.js';
 	import Badge from '$ui/badge/badge.svelte';
 	import Checkbox from '$ui/checkbox/checkbox.svelte';
@@ -93,7 +91,7 @@
 		label: 'place' | 'franchise' | 'closest';
 		name: string;
 		isLoading: () => boolean;
-		count: () => number;
+		count: () => number | undefined;
 		onclick: () => void;
 	}[] = $derived([
 		{ label: 'place', name: 'Place', isLoading: () => false, count: () => 1, onclick: () => {} },
@@ -101,14 +99,15 @@
 			label: 'franchise',
 			name: 'Franchise Locations',
 			isLoading: () => franchisePlaces.type === 'LOADING',
-			count: () => (franchisePlaces.type === 'SUCCESS' ? franchisePlaces.data.length : 0),
+			count: () => (franchisePlaces.type === 'SUCCESS' ? franchisePlaces.data.length : undefined),
 			onclick: getFranchisePlaces
 		},
 		{
 			label: 'closest',
 			name: `Closest Places (within ${CLOSEST_PLACES_RADIUS_KM} km)`,
 			isLoading: () => closestPlacesResult.type === 'LOADING',
-			count: () => (closestPlacesResult.type === 'SUCCESS' ? closestPlacesResult.data.length : 0),
+			count: () =>
+				closestPlacesResult.type === 'SUCCESS' ? closestPlacesResult.data.length : undefined,
 			onclick: getClosestPlaces
 		}
 	]);
@@ -158,7 +157,7 @@
 					<div class="animate-spin text-muted-foreground">
 						<Loader2 class="h-4" />
 					</div>
-				{:else if btn.count() > 0}
+				{:else if btn.count() !== undefined}
 					<Badge class="ml-1">{btn.count()}</Badge>
 				{/if}
 			</Label>
